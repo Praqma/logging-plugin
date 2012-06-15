@@ -62,6 +62,10 @@ public class LoggerPublisher extends Recorder {
 		logger.fine( "I'm fine" );
 		logger.severe( "I'm severe" );
 		
+		Logger logger2 = Logger.getLogger( "snade.logger" );
+		logger2.fine( "I'm fine2" );
+		logger2.severe( "I'm severe2" );
+		
 		for( Handler h : logger.getHandlers() ) {
 			System.out.println( "Handler " + h + ", " + h.getLevel() + ", " + h.getFormatter() );
 		}

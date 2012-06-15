@@ -1,5 +1,6 @@
 package net.praqma.logging;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -68,8 +69,12 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 			return levels;
 		}
 
-		public void getAcceptableLoggerNames( LoggingJobProperty instance ) {
-
+		public List<LoggerTarget> getAcceptableLoggerNames( LoggingJobProperty instance ) {
+			if( instance == null ) {
+				return new ArrayList<LoggerTarget>();
+			} else {
+				return instance.getTargets();
+			}
 		}
 
 	}

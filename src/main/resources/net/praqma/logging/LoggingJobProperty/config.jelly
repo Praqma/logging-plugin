@@ -24,8 +24,6 @@
 								</j:forEach>
 							</select>
 						</td>
-					</tr>
-					<tr>
                         <td align="right">
                             <f:repeatableDeleteButton/>
                         </td>

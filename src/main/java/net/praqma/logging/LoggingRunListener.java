@@ -36,9 +36,8 @@ public class LoggingRunListener extends RunListener<Run> {
 	public LoggingRunListener() {
 		super( Run.class );
 	}
-	
-	private List<Handler> handlers = new ArrayList<Handler>();
 
+	private List<Handler> handlers = new ArrayList<Handler>();
 
 	@Override
 	public void onStarted( Run r, TaskListener listener ) {
@@ -78,83 +77,93 @@ public class LoggingRunListener extends RunListener<Run> {
 			}
 
 		}
-		
+
 	}
-	
+
 	@Override
 	public void onCompleted( Run r, TaskListener listener ) {
 		Logger rootLogger = Logger.getLogger( "" );
-		
+
 		for( Handler handler : handlers ) {
 			System.out.println( "Removing handler from " + r );
 			handler.flush();
 			handler.close();
 			rootLogger.removeHandler( handler );
 		}
-		
-		
+
 	}
-	
 
 	/**
 	 * Setup logging handler, add to the root logger and to the list
+	 * 
 	 * @param name
 	 * @param level
 	 * @param action
 	 */
 	public Handler createHandler( String name, String level, FileOutputStream fos ) {
 		System.out.println( "Creating handler " + name + ", " + level );
-		
+
 		Formatter formatter = new SimpleFormatter();
 		Handler sh = new LoggingHandler( fos, formatter );
 
 		Level loglevel = Level.parse( level );
 		sh.setLevel( loglevel );
 
+		sh.setFilter( new LoggerNameFilter( name ) );
+
 		Logger rootLogger = Logger.getLogger( "" );
 		rootLogger.addHandler( sh );
 
 		return sh;
 	}
-	
-	
+
 	public static class LoggerNameFilter implements Filter {
 
 		private Set<String> acceptableNames = new HashSet<String>();
-		
+
 		public LoggerNameFilter( String acceptableName ) {
 			this.acceptableNames.add( acceptableName );
 		}
-		
+
 		public LoggerNameFilter( String[] acceptableNames ) {
 			this.acceptableNames.addAll( Arrays.asList( acceptableNames ) );
 		}
-		
+
 		public LoggerNameFilter( List<String> acceptableNames ) {
 			this.acceptableNames.addAll( acceptableNames );
 		}
-		
+
 		@Override
 		public boolean isLoggable( LogRecord lr ) {
-			System.out.println( "Adding log for " + lr.getLoggerName() );
-			if( acceptableNames.contains( lr.getLoggerName() ) ) {
-				return true;
-			} else {
-				return false;
+
+			boolean result = false;
+			
+			for( String name : acceptableNames ) {
+				if( name == null || !lr.getLoggerName().startsWith( name ) ) {
+					continue;
+				}
+
+				String rest = lr.getLoggerName().substring( name.length() );
+				if( rest.length() == 0 || rest.startsWith( "." ) ) {
+					System.out.println( "Adding log for " + lr.getLoggerName() );
+					return true;
+				}
 			}
+			
+			System.out.println( "NOT Adding log for " + lr.getLoggerName() );
+			return result;
 		}
-		
+
 	}
-	
-	
+
 	public static class MyFilter implements Filter {
 
 		private int threadId;
-		
+
 		public MyFilter( int threadId ) {
 			this.threadId = threadId;
 		}
-		
+
 		@Override
 		public boolean isLoggable( LogRecord lr ) {
 			System.out.println( "Comparing " + lr.getThreadID() + " and " + threadId );
@@ -164,6 +173,6 @@ public class LoggingRunListener extends RunListener<Run> {
 				return false;
 			}
 		}
-		
+
 	}
 }
