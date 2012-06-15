@@ -41,8 +41,6 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	public T invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 
 		/* Setup logger */
-		new PrintStream( lstream.getOutputStream(), true ).println( "REMOTE CALL" );
-		new PrintStream( lstream.getOutputStream(), true ).println( lstream.getOutputStream() );
 		LoggingHandler handler = LoggingUtils.createHandler( lstream.getOutputStream() );
 		LoggingUtils.addTargetsToHandler( handler, targets );
 

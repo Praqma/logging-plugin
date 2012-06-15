@@ -53,11 +53,9 @@ public final class LoggingUtils {
 			/* Creating or updating existing loggers */
 			Logger logger = LogManager.getLogManager().getLogger( t.getName() );
 			if( logger != null ) {
-				System.out.println( "EXISTING Logger: " + logger.getName() );
 				logger.setLevel( Level.ALL );
 			} else {
 				Logger nlogger = Logger.getLogger( t.getName() );
-				System.out.println( "NEW Logger: " + nlogger.getName() );
 				nlogger.setLevel( Level.ALL );
 			}
 		}

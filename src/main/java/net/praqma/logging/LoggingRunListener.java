@@ -61,7 +61,7 @@ public class LoggingRunListener extends RunListener<Run> {
 
 			FileOutputStream fos;
 			try {
-				File file = new File( r.getRootDir(), "debug-take-three" );
+				File file = new File( r.getRootDir(), "debug-take-four" );
 				fos = new FileOutputStream( file );
 				LoggingAction action = new LoggingAction( fos, prop.getTargets() );
 
@@ -85,11 +85,10 @@ public class LoggingRunListener extends RunListener<Run> {
 	public void onCompleted( Run r, TaskListener listener ) {
 		Logger rootLogger = Logger.getLogger( "" );
 
-		System.out.println( "Removing handler from " + r );
 		handler.flush();
 		handler.close();
+		
 		rootLogger.removeHandler( handler );
-
 	}
 
 }

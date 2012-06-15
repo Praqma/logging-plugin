@@ -23,8 +23,6 @@ public class LoggingHandler extends StreamHandler {
 		
 		this.threadId = (int) Thread.currentThread().getId();
 		out = new PrintStream( fos, true );
-		
-		out.println( "Locking handler to " + Thread.currentThread().getId() );
 	}
 	
 	public void addTarget( String name, String level ) {
@@ -42,11 +40,9 @@ public class LoggingHandler extends StreamHandler {
 	@Override
 	public void publish( LogRecord logRecord ) {
 		if( threadId == Thread.currentThread().getId() && checkTargets( logRecord ) ) {
-			out.println( "Adding log for " + logRecord.getLoggerName() );
 			super.publish( logRecord );
 		} else {
 			/* No op, not same thread */
-			out.println( "NOT THE SAME THREAD" );
 		}
 	}
 	
@@ -61,8 +57,6 @@ public class LoggingHandler extends StreamHandler {
 	}
 	
 	private boolean checkTarget( LoggerTarget target, LogRecord lr ) {
-		out.println( "Target: " + target + ", Record: " + lr.getLoggerName() + ", " + lr.getLevel() );
-		out.println( "Target: " + target.getLogLevel() + ", Record: " + lr.getLevel().intValue() );
 		
 		if( lr.getLevel().intValue() < target.getLogLevel() ) {
 			return false;
@@ -74,7 +68,6 @@ public class LoggingHandler extends StreamHandler {
 
 		String rest = lr.getLoggerName().substring( target.getName().length() );
 		if( rest.length() == 0 || rest.startsWith( "." ) ) {
-			out.println( "Adding log" );
 			
 			return true;
 		}

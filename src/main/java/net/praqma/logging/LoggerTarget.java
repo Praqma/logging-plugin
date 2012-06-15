@@ -12,13 +12,8 @@ public class LoggerTarget implements Serializable {
 	private String name;
 	private int logLevel;
 	
-	public LoggerTarget() {
-		System.out.println( "Whoops, wrong constructor" );
-	}
-	
 	@DataBoundConstructor
 	public LoggerTarget( String name, String level ) {
-		System.out.println( "Yay, correct constructor" );
 		this.name = name;
 		this.level = level;
 		
