@@ -5,7 +5,10 @@ import java.io.OutputStream;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.logging.Formatter;
+import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
+import java.util.logging.Logger;
 import java.util.logging.StreamHandler;
 
 public class LoggingHandler extends StreamHandler {
@@ -54,19 +57,21 @@ public class LoggingHandler extends StreamHandler {
 	}
 	
 	private boolean checkTarget( LoggerTarget target, LogRecord lr ) {
+		System.out.println( "Target: " + target + ", Record: " + lr.getLoggerName() + ", " + lr.getLevel() );
+		System.out.println( "Target: " + target.getLogLevel() + ", Record: " + lr.getLevel().intValue() );
+		
 		if( lr.getLevel().intValue() < target.getLogLevel() ) {
-			System.out.println( "Not adding log because of level " + lr.getLevel() );
 			return false;
 		}
 		
 		if( target.getName() == null || !lr.getLoggerName().startsWith( target.getName() ) ) {
-			System.out.println( "Not adding log because of name starts with " + target.getName() + ": " + lr.getLoggerName() );
 			return false;
 		}
 
 		String rest = lr.getLoggerName().substring( target.getName().length() );
 		if( rest.length() == 0 || rest.startsWith( "." ) ) {
-			System.out.println( "Adding log because of name " + target.getName() + ": " + lr.getLoggerName() );
+			System.out.println( "Adding log" );
+			
 			return true;
 		}
 		

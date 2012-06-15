@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.PrintStream;
+import java.util.List;
 import java.util.logging.Filter;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
@@ -20,11 +21,13 @@ import hudson.remoting.VirtualChannel;
 public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 
 	protected LoggingStream lstream;
+	private List<LoggerTarget> targets;
 
 	public LoggingFileCallable( AbstractBuild<?, ?> build ) {
 		LoggingAction action = build.getAction( LoggingAction.class );
 		if( action != null ) {
 			lstream = action.getLoggingStream();
+			targets = action.getTargets();
 		}
 	}
 

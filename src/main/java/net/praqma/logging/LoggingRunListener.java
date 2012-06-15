@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -14,6 +15,7 @@ import java.util.logging.Filter;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
+import java.util.logging.LogManager;
 import java.util.logging.LogRecord;
 import java.util.logging.Logger;
 import java.util.logging.SimpleFormatter;
@@ -72,6 +74,17 @@ public class LoggingRunListener extends RunListener<Run> {
 				
 				for( LoggerTarget t : prop.getTargets() ) {
 					handler.addTarget( t );
+					
+					/* Creating or updating existing loggers */
+					Logger logger = LogManager.getLogManager().getLogger( t.getName() );
+					if( logger != null ) {
+						System.out.println( "EXISTING Logger: " + logger.getName() );
+						logger.setLevel( Level.ALL );
+					} else {
+						Logger nlogger = Logger.getLogger( t.getName() );
+						System.out.println( "NEW Logger: " + nlogger.getName() );
+						nlogger.setLevel( Level.ALL );
+					}
 				}
 
 			} catch( FileNotFoundException e ) {
@@ -114,6 +127,7 @@ public class LoggingRunListener extends RunListener<Run> {
 
 		Logger rootLogger = Logger.getLogger( "" );
 		rootLogger.addHandler( sh );
+		//rootLogger.setLevel( Level.ALL );
 
 		return sh;
 	}

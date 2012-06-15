@@ -40,6 +40,10 @@ public class LoggerPublisher extends Recorder {
 	
 	private static Logger logger = Logger.getLogger( LoggerPublisher.class.getName() );
 	
+	static {
+		logger.setLevel( Level.ALL );
+	}
+	
 	@DataBoundConstructor
 	public LoggerPublisher() {
 		
