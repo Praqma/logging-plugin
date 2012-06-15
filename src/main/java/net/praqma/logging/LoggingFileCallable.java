@@ -22,12 +22,16 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 
 	protected LoggingStream lstream;
 	private List<LoggerTarget> targets;
+	private boolean remote = false;
 
 	public LoggingFileCallable( AbstractBuild<?, ?> build ) {
 		LoggingAction action = build.getAction( LoggingAction.class );
 		if( action != null ) {
 			lstream = action.getLoggingStream();
 			targets = action.getTargets();
+			remote = build.getWorkspace().isRemote();
+			
+			action.getHandler().flush();
 		}
 	}
 
@@ -37,44 +41,23 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	public T invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 
 		/* Setup logger */
-		Formatter formatterTxt = new SimpleFormatter();
-		StreamHandler sh = new StreamHandler( lstream.getOutputStream(), formatterTxt );
-		sh.setLevel( Level.FINEST );
-
-		Logger rootlogger = Logger.getLogger( "" );
-		rootlogger.addHandler( sh );
-
-		Logger logger = Logger.getLogger( "wolles.logger.com" );
-		logger.setLevel( Level.INFO );
-
-		logger.severe( "My log" );
-
-		PrintStream out = new PrintStream( lstream.getOutputStream() );
-		out.println( "FROM INVOKE" );
-		out.println( "OUT IS " + lstream.getOutputStream().getClass() + " -- " + lstream.getOutputStream() );
-
-		out.println( "GLOBAL: " + rootlogger.getName() + ", " + rootlogger.getLevel() + " - " + rootlogger.getParent() );
-
-		for( Handler h : logger.getHandlers() ) {
-			out.println( "Handler " + h + ", " + h.getLevel() + ", " + h.getFormatter() );
-		}
-
-		logger.info( "----> <----" );
+		new PrintStream( lstream.getOutputStream(), true ).println( "REMOTE CALL" );
+		new PrintStream( lstream.getOutputStream(), true ).println( lstream.getOutputStream() );
+		LoggingHandler handler = LoggingUtils.createHandler( lstream.getOutputStream() );
+		LoggingUtils.addTargetsToHandler( handler, targets );
 
 		T result = null;
 		try {
 			result = perform( workspace, channel );
 		} finally {
-			/* Teardown logger */
-
-			rootlogger.removeHandler( sh );
-			/* Do this on remotes?! */
-			//sh.flush();
-			//sh.close();
-
-			out.println( "CLOSING UP" );
-			//lstream.getOutputStream().flush();
-			//lstream.getOutputStream().close();
+			/* Tear down logger */
+			LoggingUtils.removeHandler( handler );
+			
+			/* If remote flush and close handler */
+			if( remote ) {
+				handler.flush();
+				handler.close();
+			}
 		}
 
 		return result;

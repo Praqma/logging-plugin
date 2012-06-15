@@ -69,6 +69,7 @@ public class LoggingRunListener extends RunListener<Run> {
 
 				/* Get handler */
 				handler = LoggingUtils.createHandler( fos );
+				action.setHandler( handler );
 				
 				LoggingUtils.addTargetsToHandler( handler, prop.getTargets() );
 

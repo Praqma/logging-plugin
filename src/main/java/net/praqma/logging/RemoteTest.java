@@ -21,15 +21,12 @@ public class RemoteTest extends LoggingFileCallable<Boolean> {
 	public Boolean perform(File workspace, VirtualChannel channel)
 			throws IOException, InterruptedException {
 		
-		//logger.info("OUTPUT!!!!");
 		PrintStream out = new PrintStream( lstream.getOutputStream() );
 		out.println( "Code camp 2012" );
 		
-		Logger logger = Logger.getLogger("codecamp");
-		for( Handler h : logger.getHandlers() ) {
-			out.println( "Handler " + h + ", " + h.getLevel() + ", " + h.getFormatter() );
-		}
+		Logger logger = Logger.getLogger("snade.logger.remote");
 		logger.severe("MY CODE CAMP");
+		logger.finest("MY CODE CAMP");
 		
 		
 		return true;

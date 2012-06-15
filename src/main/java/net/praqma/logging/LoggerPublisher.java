@@ -70,8 +70,11 @@ public class LoggerPublisher extends Recorder {
 		logger2.fine( "I'm fine2" );
 		logger2.severe( "I'm severe2" );
 		
-		for( Handler h : logger.getHandlers() ) {
-			System.out.println( "Handler " + h + ", " + h.getLevel() + ", " + h.getFormatter() );
+		try {
+			FilePath workspace = build.getWorkspace();
+			workspace.act( new RemoteTest( build ) );
+		} catch( Exception e ) {
+			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
 		}
 		
 		/*
