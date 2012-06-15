@@ -61,31 +61,16 @@ public class LoggingRunListener extends RunListener<Run> {
 
 			FileOutputStream fos;
 			try {
-				File file = new File( r.getRootDir(), "debug-take-two" );
+				File file = new File( r.getRootDir(), "debug-take-three" );
 				fos = new FileOutputStream( file );
-				System.out.println( "File " + file );
-				System.out.println( "FOS " + fos );
 				LoggingAction action = new LoggingAction( fos, prop.getTargets() );
 
 				r.addAction( action );
 
 				/* Get handler */
-				handler = createHandler( fos );
+				handler = LoggingUtils.createHandler( fos );
 				
-				for( LoggerTarget t : prop.getTargets() ) {
-					handler.addTarget( t );
-					
-					/* Creating or updating existing loggers */
-					Logger logger = LogManager.getLogManager().getLogger( t.getName() );
-					if( logger != null ) {
-						System.out.println( "EXISTING Logger: " + logger.getName() );
-						logger.setLevel( Level.ALL );
-					} else {
-						Logger nlogger = Logger.getLogger( t.getName() );
-						System.out.println( "NEW Logger: " + nlogger.getName() );
-						nlogger.setLevel( Level.ALL );
-					}
-				}
+				LoggingUtils.addTargetsToHandler( handler, prop.getTargets() );
 
 			} catch( FileNotFoundException e ) {
 				e.printStackTrace();
@@ -106,88 +91,4 @@ public class LoggingRunListener extends RunListener<Run> {
 
 	}
 
-	/**
-	 * Setup logging handler, add to the root logger and to the list
-	 * 
-	 * @param name
-	 * @param level
-	 * @param action
-	 */
-	public LoggingHandler createHandler( FileOutputStream fos ) {
-		//System.out.println( "Creating handler " + name + ", " + level );
-
-		Formatter formatter = new SimpleFormatter();
-		LoggingHandler sh = new LoggingHandler( fos, formatter );
-
-		//Level loglevel = Level.parse( level );
-		//sh.setLevel( loglevel );
-		sh.setLevel( Level.ALL );
-
-		//sh.setFilter( new LoggerNameFilter( name ) );
-
-		Logger rootLogger = Logger.getLogger( "" );
-		rootLogger.addHandler( sh );
-		//rootLogger.setLevel( Level.ALL );
-
-		return sh;
-	}
-
-	public static class LoggerNameFilter implements Filter {
-
-		private Set<String> acceptableNames = new HashSet<String>();
-
-		public LoggerNameFilter( String acceptableName ) {
-			this.acceptableNames.add( acceptableName );
-		}
-
-		public LoggerNameFilter( String[] acceptableNames ) {
-			this.acceptableNames.addAll( Arrays.asList( acceptableNames ) );
-		}
-
-		public LoggerNameFilter( List<String> acceptableNames ) {
-			this.acceptableNames.addAll( acceptableNames );
-		}
-
-		@Override
-		public boolean isLoggable( LogRecord lr ) {
-
-			boolean result = false;
-			
-			for( String name : acceptableNames ) {
-				if( name == null || !lr.getLoggerName().startsWith( name ) ) {
-					continue;
-				}
-
-				String rest = lr.getLoggerName().substring( name.length() );
-				if( rest.length() == 0 || rest.startsWith( "." ) ) {
-					System.out.println( "Adding log for " + lr.getLoggerName() );
-					return true;
-				}
-			}
-			
-			System.out.println( "NOT Adding log for " + lr.getLoggerName() );
-			return result;
-		}
-
-	}
-
-	public static class MyFilter implements Filter {
-
-		private int threadId;
-
-		public MyFilter( int threadId ) {
-			this.threadId = threadId;
-		}
-
-		@Override
-		public boolean isLoggable( LogRecord lr ) {
-			System.out.println( "Comparing " + lr.getThreadID() + " and " + threadId );
-			if( lr.getThreadID() == threadId ) {
-				return true;
-			} else {
-				return false;
-			}
-		}
-
-	}
 }
