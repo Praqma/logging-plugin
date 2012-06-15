@@ -37,7 +37,7 @@ public class LoggingRunListener extends RunListener<Run> {
 		super( Run.class );
 	}
 
-	private List<Handler> handlers = new ArrayList<Handler>();
+	private LoggingHandler handler;
 
 	@Override
 	public void onStarted( Run r, TaskListener listener ) {
@@ -67,9 +67,11 @@ public class LoggingRunListener extends RunListener<Run> {
 
 				r.addAction( action );
 
-				/* Get handlers */
+				/* Get handler */
+				handler = createHandler( fos );
+				
 				for( LoggerTarget t : prop.getTargets() ) {
-					handlers.add( createHandler( t.getName(), t.getLevel(), fos ) );
+					handler.addTarget( t );
 				}
 
 			} catch( FileNotFoundException e ) {
@@ -84,12 +86,10 @@ public class LoggingRunListener extends RunListener<Run> {
 	public void onCompleted( Run r, TaskListener listener ) {
 		Logger rootLogger = Logger.getLogger( "" );
 
-		for( Handler handler : handlers ) {
-			System.out.println( "Removing handler from " + r );
-			handler.flush();
-			handler.close();
-			rootLogger.removeHandler( handler );
-		}
+		System.out.println( "Removing handler from " + r );
+		handler.flush();
+		handler.close();
+		rootLogger.removeHandler( handler );
 
 	}
 
@@ -100,16 +100,17 @@ public class LoggingRunListener extends RunListener<Run> {
 	 * @param level
 	 * @param action
 	 */
-	public Handler createHandler( String name, String level, FileOutputStream fos ) {
-		System.out.println( "Creating handler " + name + ", " + level );
+	public LoggingHandler createHandler( FileOutputStream fos ) {
+		//System.out.println( "Creating handler " + name + ", " + level );
 
 		Formatter formatter = new SimpleFormatter();
-		Handler sh = new LoggingHandler( fos, formatter );
+		LoggingHandler sh = new LoggingHandler( fos, formatter );
 
-		Level loglevel = Level.parse( level );
-		sh.setLevel( loglevel );
+		//Level loglevel = Level.parse( level );
+		//sh.setLevel( loglevel );
+		sh.setLevel( Level.ALL );
 
-		sh.setFilter( new LoggerNameFilter( name ) );
+		//sh.setFilter( new LoggerNameFilter( name ) );
 
 		Logger rootLogger = Logger.getLogger( "" );
 		rootLogger.addHandler( sh );
