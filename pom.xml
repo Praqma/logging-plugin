@@ -1,0 +1,76 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>org.jenkins-ci.plugins</groupId>
+		<artifactId>plugin</artifactId>
+		<version>1.467</version>
+	</parent>
+
+	<groupId>net.praqma</groupId>
+	<artifactId>logger-test-plugin</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Logger Test Plugin</name>
+	<description>Logger test for Jenkins</description>
+	<url>https://www.praqma.net</url>
+	<packaging>hpi</packaging>
+
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.6</source>
+					<target>1.6</target>
+				</configuration>
+			</plugin>
+		</plugins>
+
+	</build>
+
+	<repositories>
+        <repository>
+          <id>repo.jenkins-ci.org</id>
+          <url>http://repo.jenkins-ci.org/public/</url>
+        </repository>
+
+		<repository>
+			<id>praqma-repo</id>
+			<url>http://code.praqma.net/repo/maven/</url>
+		</repository>
+	</repositories>
+
+	<pluginRepositories>
+        <pluginRepository>
+          <id>repo.jenkins-ci.org</id>
+          <url>http://repo.jenkins-ci.org/public/</url>
+        </pluginRepository>
+	</pluginRepositories>
+
+
+
+	<developers>
+		<developer>
+			<id>wolfgarnet</id>
+			<name>Christian Wolfgang</name>
+			<email>coolers@praqma.net</email>
+			<organization>Praqma A/S</organization>
+			<roles>
+				<role>developer</role>
+			</roles>
+			<timezone>+1</timezone>
+		</developer>
+	</developers>
+
+	<scm>
+		<connection>scm:git:ssh://github.com/Praqma/drmemory-plugin.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/Praqma/drmemory-plugin.git</developerConnection>
+		<url>https://github.com/Praqma/drmemory-plugin.git</url>
+	</scm>
+	
+</project>
