@@ -28,6 +28,10 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		this.targets = targets;
 	}
 	
+	public List<LoggerTarget> getTargets() {
+		return targets;
+	}
+	
 	@Extension
 	public static class DescriptorImpl extends JobPropertyDescriptor {
 

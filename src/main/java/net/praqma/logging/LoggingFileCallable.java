@@ -20,65 +20,62 @@ import hudson.remoting.VirtualChannel;
 public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 
 	protected LoggingStream lstream;
-	
+
 	public LoggingFileCallable( AbstractBuild<?, ?> build ) {
-		LoggingAction action = build.getAction(LoggingAction.class);
+		LoggingAction action = build.getAction( LoggingAction.class );
 		if( action != null ) {
 			lstream = action.getLoggingStream();
 		}
 	}
-	
-	public abstract T perform( File workspace, VirtualChannel channel ) throws IOException,	InterruptedException;
-	
+
+	public abstract T perform( File workspace, VirtualChannel channel ) throws IOException, InterruptedException;
+
 	@Override
-	public T invoke(File arg0, VirtualChannel arg1) throws IOException,
-			InterruptedException {
-		
+	public T invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
+
 		/* Setup logger */
 		Formatter formatterTxt = new SimpleFormatter();
 		StreamHandler sh = new StreamHandler( lstream.getOutputStream(), formatterTxt );
-		sh.setLevel(Level.FINEST);
-		
-		Logger rootlogger = Logger.getLogger("");
-		rootlogger.addHandler(sh);
+		sh.setLevel( Level.FINEST );
 
-		Logger logger = Logger.getLogger("wolles.logger.com");
-		logger.setLevel(Level.INFO);
-		
-		logger.severe("My log");
-		
+		Logger rootlogger = Logger.getLogger( "" );
+		rootlogger.addHandler( sh );
+
+		Logger logger = Logger.getLogger( "wolles.logger.com" );
+		logger.setLevel( Level.INFO );
+
+		logger.severe( "My log" );
+
 		PrintStream out = new PrintStream( lstream.getOutputStream() );
 		out.println( "FROM INVOKE" );
 		out.println( "OUT IS " + lstream.getOutputStream().getClass() + " -- " + lstream.getOutputStream() );
 
 		out.println( "GLOBAL: " + rootlogger.getName() + ", " + rootlogger.getLevel() + " - " + rootlogger.getParent() );
-				
+
 		for( Handler h : logger.getHandlers() ) {
 			out.println( "Handler " + h + ", " + h.getLevel() + ", " + h.getFormatter() );
 		}
-		
-		logger.info("----> <----");
-		
+
+		logger.info( "----> <----" );
+
 		T result = null;
 		try {
-			result = perform(arg0, arg1);
+			result = perform( workspace, channel );
 		} finally {
 			/* Teardown logger */
 
-			rootlogger.removeHandler(sh);
+			rootlogger.removeHandler( sh );
 			/* Do this on remotes?! */
 			//sh.flush();
 			//sh.close();
-			
-			
-			out.println("CLOSING UP");
+
+			out.println( "CLOSING UP" );
 			//lstream.getOutputStream().flush();
 			//lstream.getOutputStream().close();
 		}
-		
+
 		return result;
-		
-		
+
 	}
 
 }

@@ -64,40 +64,14 @@ public class LoggingRunListener extends RunListener<Run> {
 				fos = new FileOutputStream( file );
 				System.out.println( "File " + file );
 				System.out.println( "FOS " + fos );
-				LoggingAction action = new LoggingAction( fos, prop.getLogLevel() );
+				LoggingAction action = new LoggingAction( fos, prop.getTargets() );
 
 				r.addAction( action );
 
-				/* Setup handler */
-				Formatter formatter = new SimpleFormatter();
-				Handler sh = new LoggingHandler( fos, formatter );
-				//Handler sh = new StreamHandler( fos, formatter );
-				
-				Level level = Level.parse( prop.getLogLevel() );
-				sh.setLevel( level );
-				//sh.setLevel( Level.FINEST );
-				
-				Logger rootLogger = Logger.getLogger( "" );
-				rootLogger.addHandler( sh );
-								
-				
-				/*
-				logger.finest( "FROM ROOT LOGGER" );
-				logger.finer( "FROM ROOT LOGGER" );
-				logger.fine( "FROM ROOT LOGGER" );
-				logger.config( "FROM ROOT LOGGER" );
-				logger.info( "FROM ROOT LOGGER" );
-				logger.warning( "FROM ROOT LOGGER" );
-				logger.severe( "FROM ROOT LOGGER" );
-				*/
-				
-				/*
-				for( Handler h : rootLogger.getHandlers() ) {
-					System.out.println( "Handler " + h + ", " + h.getLevel() + ", " + h.getFormatter() );
+				/* Get handlers */
+				for( LoggerTarget t : prop.getTargets() ) {
+					handlers.add( createHandler( t.getName(), t.getLevel(), fos ) );
 				}
-				*/
-				
-				handler = sh;
 
 			} catch( FileNotFoundException e ) {
 				e.printStackTrace();
@@ -109,11 +83,16 @@ public class LoggingRunListener extends RunListener<Run> {
 	
 	@Override
 	public void onCompleted( Run r, TaskListener listener ) {
-		System.out.println( "Removing handler from "+ r );
-		handler.flush();
-		handler.close();
 		Logger rootLogger = Logger.getLogger( "" );
-		rootLogger.removeHandler( handler );
+		
+		for( Handler handler : handlers ) {
+			System.out.println( "Removing handler from " + r );
+			handler.flush();
+			handler.close();
+			rootLogger.removeHandler( handler );
+		}
+		
+		
 	}
 	
 
@@ -123,10 +102,11 @@ public class LoggingRunListener extends RunListener<Run> {
 	 * @param level
 	 * @param action
 	 */
-	public void createHandler( String name, String level, LoggingAction action ) {
-
+	public Handler createHandler( String name, String level, FileOutputStream fos ) {
+		System.out.println( "Creating handler " + name + ", " + level );
+		
 		Formatter formatter = new SimpleFormatter();
-		Handler sh = new LoggingHandler( action.getOut(), formatter );
+		Handler sh = new LoggingHandler( fos, formatter );
 
 		Level loglevel = Level.parse( level );
 		sh.setLevel( loglevel );
@@ -134,8 +114,7 @@ public class LoggingRunListener extends RunListener<Run> {
 		Logger rootLogger = Logger.getLogger( "" );
 		rootLogger.addHandler( sh );
 
-		handlers.add( sh );
-
+		return sh;
 	}
 	
 	

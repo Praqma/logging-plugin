@@ -2,17 +2,18 @@ package net.praqma.logging;
 
 import java.io.FileOutputStream;
 import java.io.OutputStream;
+import java.util.List;
 
 import hudson.model.Action;
 
 public class LoggingAction implements Action {
 
 	private transient LoggingStream loggingStream;
-	private transient String logLevel;
+	private transient List<LoggerTarget> targets;
 
-	public LoggingAction( FileOutputStream out, String logLevel ) {
+	public LoggingAction( FileOutputStream out, List<LoggerTarget> targets ) {
 		loggingStream = new LoggingStream( out );
-		this.logLevel = logLevel;
+		this.targets = targets;
 	}
 
 	public OutputStream getOut() {
@@ -21,6 +22,10 @@ public class LoggingAction implements Action {
 
 	public LoggingStream getLoggingStream() {
 		return loggingStream;
+	}
+	
+	public List<LoggerTarget> getTargets() {
+		return targets;
 	}
 
 	@Override
