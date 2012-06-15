@@ -1,6 +1,7 @@
 package net.praqma.logging;
 
 import java.io.FileOutputStream;
+import java.io.OutputStream;
 import java.util.logging.Formatter;
 import java.util.logging.LogRecord;
 import java.util.logging.StreamHandler;
@@ -13,7 +14,7 @@ public class LoggingHandler extends StreamHandler {
 		this.threadId = threadId;
 	}
 	
-	public LoggingHandler( FileOutputStream fos, Formatter formatter ) {
+	public LoggingHandler( OutputStream fos, Formatter formatter ) {
 		super( fos, formatter );
 		
 		this.threadId = (int) Thread.currentThread().getId();

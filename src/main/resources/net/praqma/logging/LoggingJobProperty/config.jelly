@@ -3,11 +3,7 @@
 
 	<f:optionalBlock name="debugLog" title="${%Enable logging for job}" checked="${instance!=null}">
 		<f:entry title="${%Level to log}">
-			<select name="logLevel">
-				<j:forEach var="l" items="${descriptor.getLogLevels()}">
-					<f:option selected="${instance.logLevel == l.toUpperCase()}" value="${l.toUpperCase()}">${l}</f:option>
-				</j:forEach>
-			</select>
+
 		</f:entry>
 		
 		<f:entry title="${%Acceptable logger names}">
@@ -20,6 +16,13 @@
 			 		<tr>
                         <td align="left">
                         	<f:textbox name="logging.logger.name" value="${inst.name}"/>
+						</td>
+						<td>
+							<select name="logging.logger.level">
+								<j:forEach var="l" items="${descriptor.getLogLevels()}">
+									<f:option selected="${inst.level == l.toUpperCase()}" value="${l.toUpperCase()}">${l}</f:option>
+								</j:forEach>
+							</select>
 						</td>
 					</tr>
 					<tr>

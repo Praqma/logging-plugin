@@ -1,5 +1,6 @@
 package net.praqma.logging;
 
+import java.util.List;
 import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
@@ -16,33 +17,36 @@ import hudson.model.Job;
 public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 
 	public static final String[] levels = { "all", "finest", "finer", "fine", "config", "info", "warning", "severe" };
-
-	private String logLevel;
+	
+	private List<LoggerTarget> targets;
 
 	@DataBoundConstructor
-	public LoggingJobProperty( String logLevel ) {
-		this.logLevel = logLevel;
+	public LoggingJobProperty() {
 	}
 
-	public String getLogLevel() {
-		return logLevel;
+	private void setTargets( List<LoggerTarget> targets ) {
+		this.targets = targets;
 	}
-
+	
 	@Extension
 	public static class DescriptorImpl extends JobPropertyDescriptor {
 
 		public JobProperty<?> newInstance( StaplerRequest req, JSONObject formData ) throws FormException {
 			Object debugObject = formData.get( "debugLog" );
-			
+
 			System.out.println( formData.toString( 2 ) );
-			
+
 			if( debugObject != null ) {
 				JSONObject debugJSON = (JSONObject) debugObject;
-				LoggingJobProperty instance = req.bindJSON( LoggingJobProperty.class, debugJSON );
+
+				LoggingJobProperty instance = new LoggingJobProperty();
+
+				List<LoggerTarget> targets = req.bindParametersToList( LoggerTarget.class, "logging.logger." );
+				instance.setTargets( targets );
 				
 				return instance;
 			}
-			
+
 			return null;
 		}
 
@@ -59,15 +63,15 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		public String[] getLogLevels() {
 			return levels;
 		}
-		
+
 		public void getAcceptableLoggerNames( LoggingJobProperty instance ) {
-			
+
 		}
 
 	}
 
 	public String toString() {
-		return "Logging job property, " + logLevel;
+		return "Logging job property, " + targets;
 	}
 
 }

@@ -37,15 +37,8 @@ public class LoggingRunListener extends RunListener<Run> {
 		super( Run.class );
 	}
 	
-	private Handler handler;
-	
-	public Environment setUpEnvironment( AbstractBuild build, Launcher launcher, BuildListener listener ) throws IOException, InterruptedException {
-		
-		int tid = (int) Thread.currentThread().getId();
-		System.out.println( "ENV to thread " + tid );
-		
-    	return new Environment() {};
-	}
+	private List<Handler> handlers = new ArrayList<Handler>();
+
 
 	@Override
 	public void onStarted( Run r, TaskListener listener ) {
@@ -123,6 +116,27 @@ public class LoggingRunListener extends RunListener<Run> {
 		rootLogger.removeHandler( handler );
 	}
 	
+
+	/**
+	 * Setup logging handler, add to the root logger and to the list
+	 * @param name
+	 * @param level
+	 * @param action
+	 */
+	public void createHandler( String name, String level, LoggingAction action ) {
+
+		Formatter formatter = new SimpleFormatter();
+		Handler sh = new LoggingHandler( action.getOut(), formatter );
+
+		Level loglevel = Level.parse( level );
+		sh.setLevel( loglevel );
+
+		Logger rootLogger = Logger.getLogger( "" );
+		rootLogger.addHandler( sh );
+
+		handlers.add( sh );
+
+	}
 	
 	
 	public static class LoggerNameFilter implements Filter {
