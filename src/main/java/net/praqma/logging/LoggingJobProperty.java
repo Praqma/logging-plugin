@@ -20,9 +20,12 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	public static final String[] levels = { "all", "finest", "finer", "fine", "config", "info", "warning", "severe" };
 	
 	private List<LoggerTarget> targets;
+	
+	private boolean pollLogging = false;
 
 	@DataBoundConstructor
-	public LoggingJobProperty() {
+	public LoggingJobProperty( boolean pollLogging ) {
+		this.pollLogging = pollLogging;
 	}
 
 	private void setTargets( List<LoggerTarget> targets ) {
@@ -33,6 +36,10 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		return targets;
 	}
 	
+	public boolean isPollLogging() {
+		return pollLogging;
+	}
+	
 	@Extension
 	public static class DescriptorImpl extends JobPropertyDescriptor {
 
@@ -40,11 +47,13 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 			Object debugObject = formData.get( "debugLog" );
 
 			System.out.println( formData.toString( 2 ) );
-
+			
 			if( debugObject != null ) {
 				JSONObject debugJSON = (JSONObject) debugObject;
+				
+				boolean pollLogging = debugJSON.getBoolean( "pollLogging" );
 
-				LoggingJobProperty instance = new LoggingJobProperty();
+				LoggingJobProperty instance = new LoggingJobProperty( pollLogging );
 
 				List<LoggerTarget> targets = req.bindParametersToList( LoggerTarget.class, "logging.logger." );
 				instance.setTargets( targets );

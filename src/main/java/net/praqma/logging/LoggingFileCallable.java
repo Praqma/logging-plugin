@@ -15,7 +15,10 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.StreamHandler;
 
 import hudson.FilePath.FileCallable;
+import hudson.model.Item;
 import hudson.model.AbstractBuild;
+import hudson.model.AbstractProject;
+import hudson.model.Actionable;
 import hudson.remoting.VirtualChannel;
 
 public abstract class LoggingFileCallable<T> implements FileCallable<T> {
@@ -24,7 +27,15 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	private List<LoggerTarget> targets;
 	private boolean remote = false;
 
-	public LoggingFileCallable( AbstractBuild<?, ?> build ) {
+	public LoggingFileCallable( Actionable a ) {
+		if( a instanceof AbstractBuild ) {
+			initialize( (AbstractBuild)a );
+		} else if( a instanceof AbstractProject ) {
+			initialize( (RemoteLoggable)a );
+		}
+	}
+	
+	private void initialize( AbstractBuild<?, ?> build ) {
 		LoggingAction action = build.getAction( LoggingAction.class );
 		if( action != null ) {
 			lstream = action.getLoggingStream();
@@ -34,6 +45,31 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 			action.getHandler().flush();
 		}
 	}
+	
+	private void initialize( RemoteLoggable build ) {
+		LoggingAction action = build.getAction( LoggingAction.class );
+		if( action != null ) {
+			lstream = action.getLoggingStream();
+			targets = action.getTargets();
+			remote = build.getWorkspace().isRemote();
+			
+			action.getHandler().flush();
+		}
+	}
+	
+	/*
+	private LoggingFileCallable( AbstractBuild<?, ?> build ) {
+		LoggingAction action = build.getAction( LoggingAction.class );
+		if( action != null ) {
+			lstream = action.getLoggingStream();
+			targets = action.getTargets();
+			remote = build.getWorkspace().isRemote();
+			
+			action.getHandler().flush();
+		}
+	}
+	*/
+
 
 	public abstract T perform( File workspace, VirtualChannel channel ) throws IOException, InterruptedException;
 
@@ -53,8 +89,12 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 			
 			/* If remote flush and close handler */
 			if( remote ) {
-				handler.flush();
-				handler.close();
+				try {
+					handler.flush();
+					handler.close();
+				} catch( Exception e ) {
+					/* Unable to close handler */
+				}
 			}
 		}
 

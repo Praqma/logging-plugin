@@ -33,6 +33,10 @@
 		</f:repeatable>
 		</f:entry>
 		
+	    <f:entry title="${%Enable poll logging}">
+	       <f:checkbox name="logging.pollLogging" checked="${instance.pollLogging}" />                                                                                        
+	    </f:entry>
+		
 	</f:optionalBlock>
 
 </j:jelly>

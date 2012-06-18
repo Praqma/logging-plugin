@@ -8,9 +8,9 @@ import hudson.model.Action;
 
 public class LoggingAction implements Action {
 
-	private transient LoggingStream loggingStream;
-	private transient List<LoggerTarget> targets;
-	private transient LoggingHandler handler;
+	protected transient LoggingStream loggingStream;
+	protected transient List<LoggerTarget> targets;
+	protected transient LoggingHandler handler;
 
 	public LoggingAction( FileOutputStream out, List<LoggerTarget> targets ) {
 		loggingStream = new LoggingStream( out );

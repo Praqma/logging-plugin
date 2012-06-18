@@ -39,8 +39,6 @@ public class LoggingRunListener extends RunListener<Run> {
 		super( Run.class );
 	}
 
-	private LoggingHandler handler;
-
 	@Override
 	public void onStarted( Run r, TaskListener listener ) {
 
@@ -68,7 +66,7 @@ public class LoggingRunListener extends RunListener<Run> {
 				r.addAction( action );
 
 				/* Get handler */
-				handler = LoggingUtils.createHandler( fos );
+				LoggingHandler handler = LoggingUtils.createHandler( fos );
 				action.setHandler( handler );
 				
 				LoggingUtils.addTargetsToHandler( handler, prop.getTargets() );
@@ -85,10 +83,15 @@ public class LoggingRunListener extends RunListener<Run> {
 	public void onCompleted( Run r, TaskListener listener ) {
 		Logger rootLogger = Logger.getLogger( "" );
 
-		handler.flush();
-		handler.close();
+		LoggingAction action = r.getAction( LoggingAction.class );
 		
-		rootLogger.removeHandler( handler );
+		if( action != null ) {
+			Handler handler = action.getHandler();
+			handler.flush();
+			handler.close();
+			
+			rootLogger.removeHandler( handler );
+		}
 	}
 
 }
