@@ -3,31 +3,12 @@ package net.praqma.logging;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
-import java.util.logging.Filter;
-import java.util.logging.Formatter;
 import java.util.logging.Handler;
-import java.util.logging.Level;
-import java.util.logging.LogManager;
-import java.util.logging.LogRecord;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.logging.StreamHandler;
 
 import hudson.Extension;
-import hudson.Launcher;
 import hudson.matrix.MatrixRun;
-import hudson.model.BuildListener;
-import hudson.model.Environment;
 import hudson.model.TaskListener;
-import hudson.model.AbstractBuild;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.listeners.RunListener;
@@ -55,11 +36,10 @@ public class LoggingRunListener extends RunListener<Run> {
 
 		LoggingJobProperty prop = (LoggingJobProperty) job.getProperty( LoggingJobProperty.class );
 		if( prop != null ) {
-			System.out.println( "Adding logging handler to " + r + " with " + prop );
 
 			FileOutputStream fos;
 			try {
-				File file = new File( r.getRootDir(), "debug-take-four" );
+				File file = new File( r.getRootDir(), "debug" );
 				fos = new FileOutputStream( file );
 				LoggingAction action = new LoggingAction( fos, prop.getTargets() );
 
