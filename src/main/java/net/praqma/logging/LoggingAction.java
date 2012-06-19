@@ -11,14 +11,10 @@ public class LoggingAction implements Action {
 	protected transient LoggingStream loggingStream;
 	protected transient List<LoggerTarget> targets;
 	protected transient LoggingHandler handler;
-	
-	protected String mystring;
 
 	public LoggingAction( FileOutputStream out, List<LoggerTarget> targets ) {
 		loggingStream = new LoggingStream( out );
 		this.targets = targets;
-		
-		this.mystring = "NEJ NJE";
 	}
 	
 	public LoggingAction( LoggingHandler handler, List<LoggerTarget> targets ) {
@@ -63,6 +59,6 @@ public class LoggingAction implements Action {
 	}
 	
 	public String toString() {
-		return "Targets: " + targets + ", " + handler + " - " + mystring;
+		return "Targets: " + targets + ", " + handler;
 	}
 }
