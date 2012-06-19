@@ -49,7 +49,7 @@ public class LoggingRunListener extends RunListener<Run> {
 				LoggingHandler handler = LoggingUtils.createHandler( fos );
 				action.setHandler( handler );
 				
-				LoggingUtils.addTargetsToHandler( handler, prop.getTargets() );
+				handler.addTargets( prop.getTargets() );
 
 			} catch( FileNotFoundException e ) {
 				e.printStackTrace();
