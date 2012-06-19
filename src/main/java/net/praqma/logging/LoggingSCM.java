@@ -43,9 +43,13 @@ public class LoggingSCM extends SCM {
 	@Override
 	protected PollingResult compareRemoteRevisionWith( AbstractProject<?, ?> project, Launcher launcher, FilePath workspace, TaskListener listener, SCMRevisionState baseline ) throws IOException, InterruptedException {
 		
-		logger.finer( "I am a fine message" );
-		logger.warning( "I am a warning message" );
-		logger.severe( "I am a severe message" );
+		logger.finest( "finest from local SCM" );
+		logger.finer( "finer from local SCM" );
+		logger.fine( "fine from local SCM" );
+		logger.config( "config from local SCM" );
+		logger.info( "info from local SCM" );
+		logger.warning( "warning from local SCM" );
+		logger.severe( "severe from local SCM" );
 		
 		try {
 			workspace.act( new RemoteTest( project ) );
