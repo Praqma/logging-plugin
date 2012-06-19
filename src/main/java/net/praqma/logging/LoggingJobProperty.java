@@ -1,16 +1,12 @@
 package net.praqma.logging;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
 
@@ -18,10 +14,8 @@ import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import hudson.Extension;
-import hudson.model.Action;
 import hudson.model.JobProperty;
 import hudson.model.JobPropertyDescriptor;
-import hudson.model.AbstractProject;
 import hudson.model.Job;
 
 public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
@@ -43,7 +37,6 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		LoggingHandler pollhandler = this.pollhandler.get( id );
 		
 		if( pollhandler == null ) {
-			System.out.println( "Creating new poll handler" );
 			File path = new File( owner.getRootDir(), "poll-logging" );
 			if( !path.exists() ) {
 				path.mkdir();
@@ -57,8 +50,6 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 			this.pollhandler.put( id, pollhandler );
 		}
 		
-		System.out.println( "Poll handler = " + pollhandler );
-		
 		return pollhandler;
 	}
 	
@@ -71,26 +62,6 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		return new LoggingAction( handler, getTargets() );
 	}
 
-	/*
-	@Override
-	public Collection<? extends Action> getJobActions( Job j ) {
-		System.out.println( "Getting actions for job " + owner );
-		
-		try {
-			File path = new File( owner.getRootDir(), "poll-logging" );
-			path.mkdir();
-			File file = new File( path, "logging" );
-			
-			FileOutputStream fos = new FileOutputStream( file );
-			
-			return Collections.singletonList( new LoggingAction( fos, targets ) );
-		} catch( Exception e ) {
-			return Collections.EMPTY_LIST;
-		}
-		
-		
-	}
-	*/
 
 	private void setTargets( List<LoggerTarget> targets ) {
 		this.targets = targets;
