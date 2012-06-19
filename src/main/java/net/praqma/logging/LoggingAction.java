@@ -9,15 +9,15 @@ import hudson.model.Action;
 public class LoggingAction implements Action {
 
 	protected transient LoggingStream loggingStream;
-	protected transient List<LoggerTarget> targets;
+	protected transient List<LoggingTarget> targets;
 	protected transient LoggingHandler handler;
 
-	public LoggingAction( FileOutputStream out, List<LoggerTarget> targets ) {
+	public LoggingAction( FileOutputStream out, List<LoggingTarget> targets ) {
 		loggingStream = new LoggingStream( out );
 		this.targets = targets;
 	}
 	
-	public LoggingAction( LoggingHandler handler, List<LoggerTarget> targets ) {
+	public LoggingAction( LoggingHandler handler, List<LoggingTarget> targets ) {
 		loggingStream = new LoggingStream( handler.getOut() );
 		this.targets = targets;
 		this.handler = handler;
@@ -31,7 +31,7 @@ public class LoggingAction implements Action {
 		return loggingStream;
 	}
 	
-	public List<LoggerTarget> getTargets() {
+	public List<LoggingTarget> getTargets() {
 		return targets;
 	}
 	

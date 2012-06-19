@@ -15,7 +15,7 @@ import java.util.logging.StreamHandler;
 public class LoggingHandler extends StreamHandler {
 
 	private int threadId;
-	private Set<LoggerTarget> targets = new HashSet<LoggerTarget>();
+	private Set<LoggingTarget> targets = new HashSet<LoggingTarget>();
 	private OutputStream out;
 
 	public LoggingHandler( OutputStream fos, Formatter formatter ) {
@@ -31,19 +31,19 @@ public class LoggingHandler extends StreamHandler {
 	}
 	
 	public void addTarget( String name, String level ) {
-		targets.add( new LoggerTarget( name, level ) );
+		targets.add( new LoggingTarget( name, level ) );
 	}
 	
-	public void addTarget( LoggerTarget target ) {
+	public void addTarget( LoggingTarget target ) {
 		targets.add( target );
 	}
 	
-	public void addTarget( Set<LoggerTarget> targets ) {
+	public void addTarget( Set<LoggingTarget> targets ) {
 		targets.addAll( targets );
 	}
 	
-	public void addTargets( List<LoggerTarget> targets ) {
-		for( LoggerTarget t : targets ) {
+	public void addTargets( List<LoggingTarget> targets ) {
+		for( LoggingTarget t : targets ) {
 			addTarget( t );
 			
 			/* Creating or updating existing loggers */
@@ -67,7 +67,7 @@ public class LoggingHandler extends StreamHandler {
 	}
 	
 	private boolean checkTargets( LogRecord lr ) {
-		for( LoggerTarget target : targets ) {
+		for( LoggingTarget target : targets ) {
 			if( checkTarget( target, lr ) ) {
 				return true;
 			}
@@ -76,7 +76,7 @@ public class LoggingHandler extends StreamHandler {
 		return false;
 	}
 	
-	private boolean checkTarget( LoggerTarget target, LogRecord lr ) {
+	private boolean checkTarget( LoggingTarget target, LogRecord lr ) {
 		
 		if( lr.getLevel().intValue() < target.getLogLevel() ) {
 			return false;

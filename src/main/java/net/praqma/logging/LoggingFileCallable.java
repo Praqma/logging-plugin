@@ -15,7 +15,7 @@ import hudson.remoting.VirtualChannel;
 public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 
 	protected LoggingStream lstream;
-	private List<LoggerTarget> targets;
+	private List<LoggingTarget> targets;
 
 	public LoggingFileCallable( Actionable a ) {
 		if( a instanceof AbstractBuild ) {

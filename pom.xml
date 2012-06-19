@@ -8,9 +8,9 @@
 	</parent>
 
 	<groupId>net.praqma</groupId>
-	<artifactId>logger-test-plugin</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
-	<name>Logger Test Plugin</name>
+	<artifactId>logging</artifactId>
+	<version>0.1.1-SNAPSHOT</version>
+	<name>Logging Plugin</name>
 	<description>Logger test for Jenkins</description>
 	<url>https://www.praqma.net</url>
 	<packaging>hpi</packaging>
@@ -68,9 +68,9 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:ssh://github.com/Praqma/drmemory-plugin.git</connection>
-		<developerConnection>scm:git:ssh://git@github.com/Praqma/drmemory-plugin.git</developerConnection>
-		<url>https://github.com/Praqma/drmemory-plugin.git</url>
+		<connection>scm:git:ssh://github.com/Praqma/logging-plugin.git</connection>
+		<developerConnection>scm:git:ssh://git@github.com/Praqma/logging-plugin.git</developerConnection>
+		<url>https://github.com/Praqma/logging-plugin.git</url>
 	</scm>
 	
 </project>

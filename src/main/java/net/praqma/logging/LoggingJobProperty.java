@@ -22,7 +22,7 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 
 	public static final String[] levels = { "all", "finest", "finer", "fine", "config", "info", "warning", "severe" };
 
-	private List<LoggerTarget> targets;
+	private List<LoggingTarget> targets;
 
 	private boolean pollLogging = false;
 	
@@ -63,11 +63,11 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	}
 
 
-	private void setTargets( List<LoggerTarget> targets ) {
+	private void setTargets( List<LoggingTarget> targets ) {
 		this.targets = targets;
 	}
 
-	public List<LoggerTarget> getTargets() {
+	public List<LoggingTarget> getTargets() {
 		return targets;
 	}
 
@@ -90,7 +90,7 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 
 				LoggingJobProperty instance = new LoggingJobProperty( pollLogging );
 
-				List<LoggerTarget> targets = req.bindParametersToList( LoggerTarget.class, "logging.logger." );
+				List<LoggingTarget> targets = req.bindParametersToList( LoggingTarget.class, "logging.logger." );
 				instance.setTargets( targets );
 
 				return instance;
@@ -113,9 +113,9 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 			return levels;
 		}
 
-		public List<LoggerTarget> getAcceptableLoggerNames( LoggingJobProperty instance ) {
+		public List<LoggingTarget> getAcceptableLoggerNames( LoggingJobProperty instance ) {
 			if( instance == null ) {
-				return new ArrayList<LoggerTarget>();
+				return new ArrayList<LoggingTarget>();
 			} else {
 				return instance.getTargets();
 			}
