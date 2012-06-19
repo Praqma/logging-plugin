@@ -58,12 +58,6 @@ public class LoggerPublisher extends Recorder {
 	}
 	
 	@Override
-	public Collection<? extends Action> getProjectActions( AbstractProject<?, ?> p ) {
-		System.out.println( "Getting actions for project " + p );
-		return Collections.singletonList( new LoggingProjectAction( null, null, "WHAT?!" ) );
-	}
-
-	@Override
 	public boolean perform( AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener ) throws InterruptedException, IOException {
 		
 		//FileOutputStream fos = new FileOutputStream( new File( build.getRootDir(), "debug" ) );

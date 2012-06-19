@@ -1,7 +1,9 @@
 package net.praqma.logging;
 
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,12 +29,43 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	private List<LoggerTarget> targets;
 
 	private boolean pollLogging = false;
+	
+	private LoggingHandler pollhandler;
 
 	@DataBoundConstructor
 	public LoggingJobProperty( boolean pollLogging ) {
 		this.pollLogging = pollLogging;
 	}
+	
+	public LoggingHandler getPollhandler() throws IOException {
+		if( pollhandler == null ) {
+			System.out.println( "Creating new poll handler" );
+			File path = new File( owner.getRootDir(), "poll-logging" );
+			if( !path.exists() ) {
+				path.mkdir();
+			}
+			File file = new File( path, "logging" );
+			FileOutputStream fos = new FileOutputStream( file, true );
+			pollhandler = LoggingUtils.createHandler( fos );
+			
+			pollhandler.addTargets( getTargets() );
+		}
+		
+		System.out.println( "Poll handler = " + pollhandler );
+		
+		return pollhandler;
+	}
+	
+	public void resetPollhandler() {
+		pollhandler = null;
+	}
+	
+	public LoggingAction getLoggingAction() throws IOException {
+		LoggingHandler handler = getPollhandler();
+		return new LoggingAction( handler, getTargets() );
+	}
 
+	/*
 	@Override
 	public Collection<? extends Action> getJobActions( Job j ) {
 		System.out.println( "Getting actions for job " + owner );
@@ -44,13 +77,14 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 			
 			FileOutputStream fos = new FileOutputStream( file );
 			
-			return Collections.singletonList( new LoggingProjectAction( fos, targets, "WHAT?!" ) );
+			return Collections.singletonList( new LoggingAction( fos, targets ) );
 		} catch( Exception e ) {
 			return Collections.EMPTY_LIST;
 		}
 		
 		
 	}
+	*/
 
 	private void setTargets( List<LoggerTarget> targets ) {
 		this.targets = targets;

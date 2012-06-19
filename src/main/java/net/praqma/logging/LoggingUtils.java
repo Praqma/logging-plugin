@@ -48,6 +48,7 @@ public final class LoggingUtils {
 	 */
 	public static void addTargetsToHandler( LoggingHandler handler, List<LoggerTarget> targets ) {
 		for( LoggerTarget t : targets ) {
+			System.out.println( "Adding " + t + " to " + handler );
 			handler.addTarget( t );
 			
 			/* Creating or updating existing loggers */

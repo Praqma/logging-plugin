@@ -4,10 +4,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.PrintStream;
+import java.util.Collection;
+import java.util.List;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
 import hudson.Extension;
+import hudson.model.Action;
 import hudson.model.TaskListener;
 import hudson.model.AbstractProject;
 import hudson.model.listeners.SCMPollListener;
@@ -23,54 +27,20 @@ public class LoggingPollingListener extends SCMPollListener {
 		if( prop != null ) {
 			listener.getLogger().println( "WHOOP! Property defined!" );
 
-			FileOutputStream fos;
+			//List<? extends Action> actions = (List<? extends Action>) prop.getJobActions( project );
 			try {
-				File path = new File( project.getRootDir(), "poll-logging" );
-				path.mkdir();
-				File file = new File( path, "logging" );
+				LoggingAction action = prop.getLoggingAction();
 				
-				fos = new FileOutputStream( file );
-				//LoggingProjectAction action = new LoggingProjectAction( fos, prop.getTargets() );
-				
-				LoggingAction action = null;
-				try {
-					action = new LoggingAction( fos, prop.getTargets() );
-	
-					listener.getLogger().println( "PRE POLL Action: " + action );
-				} catch( Exception e ) {
-					listener.getLogger().println( "Couldn't save: " + e.getMessage() );
-					e.printStackTrace();
+				if( action != null ) {
+					
+					/* Get handler */
+					listener.getLogger().println( "Action1: " + action );
+					
+					listener.getLogger().println( "Thread1: " + Thread.currentThread().getId() );
+					listener.getLogger().println( "Thread1: " + Thread.currentThread().getName() );
 				}
+			} catch( Exception e ) {
 				
-				
-				try {
-					listener.getLogger().println( "addunf" );
-					project.getActions().add( action );
-					//project.addAction( action );
-					listener.getLogger().println( "Save" );
-					project.save();
-				} catch( IOException e ) {
-					listener.getLogger().println( "Couldn't save: " + e.getMessage() );
-					e.printStackTrace();
-				}
-
-				listener.getLogger().println( "111111" );
-				
-				/* Get handler */
-				LoggingHandler handler = LoggingUtils.createHandler( fos );
-				action.setHandler( handler );
-				
-				listener.getLogger().println( "22222" );
-				
-				
-				LoggingUtils.addTargetsToHandler( handler, prop.getTargets() );
-				
-				
-				LoggingAction action2 = project.getAction( LoggingAction.class );
-				listener.getLogger().println( "Action2: " + action2 );
-
-			} catch( FileNotFoundException e ) {
-				e.printStackTrace();
 			}
 		}
 	}
@@ -79,18 +49,57 @@ public class LoggingPollingListener extends SCMPollListener {
 	public void onAfterPolling( AbstractProject<?, ?> project, TaskListener listener ) {
 		listener.getLogger().println( "WHOOP! After polling..." );
 		
+		
+		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
+		if( prop != null ) {
+			try {
+				LoggingAction action = prop.getLoggingAction();
+				
+				if( action != null ) {
+					Logger rootLogger = Logger.getLogger( "" );
+					listener.getLogger().println( "Thread3: " + Thread.currentThread().getId() );
+					listener.getLogger().println( "Thread3: " + Thread.currentThread().getName() );
+					
+					Handler handler = action.getHandler();
+					listener.getLogger().println( "Handler: " + handler );
+					handler.flush();
+					handler.close();
+					listener.getLogger().println( "Handler closed and flushed" );
+					rootLogger.removeHandler( handler );
+					listener.getLogger().println( "Handler removed" );
+					action.getOut().flush();
+					action.getOut().close();
+					listener.getLogger().println( "ENDING" );
+				}
+			} catch( Exception e ) {
+				
+			} finally {
+				prop.resetPollhandler();
+			}
+		}
+		
+		
+		/*
 		Logger rootLogger = Logger.getLogger( "" );
 
 		LoggingAction action = project.getAction( LoggingAction.class );
 		listener.getLogger().println( "Action: " + action );
 		
 		if( action != null ) {
+			
+			listener.getLogger().println( "Thread3: " + Thread.currentThread().getId() );
+			listener.getLogger().println( "Thread3: " + Thread.currentThread().getName() );
+			
 			Handler handler = action.getHandler();
+			listener.getLogger().println( "Handler: " + handler );
 			handler.flush();
 			handler.close();
-			
+			listener.getLogger().println( "Handler closed and flushed" );
 			rootLogger.removeHandler( handler );
+			listener.getLogger().println( "Handler removed" );
+
 		}
+		*/
 	}
 	
 }

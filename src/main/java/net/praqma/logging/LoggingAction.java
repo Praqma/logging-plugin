@@ -21,11 +21,10 @@ public class LoggingAction implements Action {
 		this.mystring = "NEJ NJE";
 	}
 	
-	public LoggingAction( FileOutputStream out, List<LoggerTarget> targets, String t ) {
-		loggingStream = new LoggingStream( out );
+	public LoggingAction( LoggingHandler handler, List<LoggerTarget> targets ) {
+		loggingStream = new LoggingStream( handler.getOut() );
 		this.targets = targets;
-		
-		this.mystring = t;
+		this.handler = handler;
 	}
 
 	public OutputStream getOut() {
@@ -61,5 +60,9 @@ public class LoggingAction implements Action {
 	@Override
 	public String getUrlName() {
 		return null;
+	}
+	
+	public String toString() {
+		return "Targets: " + targets + ", " + handler + " - " + mystring;
 	}
 }
