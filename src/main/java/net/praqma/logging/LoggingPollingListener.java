@@ -31,19 +31,26 @@ public class LoggingPollingListener extends SCMPollListener {
 				
 				fos = new FileOutputStream( file );
 				//LoggingProjectAction action = new LoggingProjectAction( fos, prop.getTargets() );
-				LoggingAction action = new LoggingAction( fos, prop.getTargets() );
-
-				listener.getLogger().println( "PRE POLL Action: " + action );
+				
+				LoggingAction action = null;
+				try {
+					action = new LoggingAction( fos, prop.getTargets() );
+	
+					listener.getLogger().println( "PRE POLL Action: " + action );
+				} catch( Exception e ) {
+					listener.getLogger().println( "Couldn't save: " + e.getMessage() );
+					e.printStackTrace();
+				}
 				
 				
 				try {
 					listener.getLogger().println( "addunf" );
-					project.addAction( action );
+					project.getActions().add( action );
+					//project.addAction( action );
 					listener.getLogger().println( "Save" );
 					project.save();
 				} catch( IOException e ) {
 					listener.getLogger().println( "Couldn't save: " + e.getMessage() );
-					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 

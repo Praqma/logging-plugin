@@ -5,6 +5,8 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.io.PrintStream;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
@@ -22,6 +24,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.Launcher;
+import hudson.model.Action;
 import hudson.model.BuildListener;
 import hudson.model.TaskListener;
 import hudson.model.AbstractBuild;
@@ -52,6 +55,12 @@ public class LoggerPublisher extends Recorder {
 	@Override
 	public BuildStepMonitor getRequiredMonitorService() {
 		return BuildStepMonitor.BUILD;
+	}
+	
+	@Override
+	public Collection<? extends Action> getProjectActions( AbstractProject<?, ?> p ) {
+		System.out.println( "Getting actions for project " + p );
+		return Collections.singletonList( new LoggingProjectAction( null, null, "WHAT?!" ) );
 	}
 
 	@Override

@@ -7,8 +7,8 @@ import hudson.model.ProminentProjectAction;
 
 public class LoggingProjectAction extends LoggingAction implements ProminentProjectAction {
 
-	public LoggingProjectAction( FileOutputStream out, List<LoggerTarget> targets ) {
-		super( out, targets );
+	public LoggingProjectAction( FileOutputStream out, List<LoggerTarget> targets, String t ) {
+		super( out, targets, t );
 	}
 
 	@Override
@@ -19,7 +19,7 @@ public class LoggingProjectAction extends LoggingAction implements ProminentProj
 	@Override
 	public String getDisplayName() {
 		return null;
-	}
+	} 
 
 	@Override
 	public String getUrlName() {
