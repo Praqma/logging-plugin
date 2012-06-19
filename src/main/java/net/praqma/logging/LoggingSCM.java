@@ -47,20 +47,12 @@ public class LoggingSCM extends SCM {
 		logger.warning( "I am a warning message" );
 		logger.severe( "I am a severe message" );
 		
-		listener.getLogger().println( "Thread2: " + Thread.currentThread().getId() );
-		listener.getLogger().println( "Thread2: " + Thread.currentThread().getName() );
-		
-		listener.getLogger().println( "Workspace: " + workspace.isRemote() );
-		listener.getLogger().println( "Workspace: " + workspace.getRemote() );
-		listener.getLogger().println( "Workspace: " + workspace.toURI() );
-		
 		try {
 			workspace.act( new RemoteTest( project ) );
 		} catch( Exception e ) {
 			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
 		}
 		
-		//return PollingResult.BUILD_NOW;
 		return PollingResult.NO_CHANGES;
 	}
 
