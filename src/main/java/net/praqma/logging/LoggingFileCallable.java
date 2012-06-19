@@ -57,7 +57,7 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 
 		/* Setup logger */
 		LoggingHandler handler = LoggingUtils.createHandler( lstream.getOutputStream() );
-		LoggingUtils.addTargetsToHandler( handler, targets );
+		handler.addTargets( targets );
 
 		T result = null;
 		try {
