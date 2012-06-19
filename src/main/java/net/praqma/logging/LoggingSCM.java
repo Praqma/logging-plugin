@@ -6,6 +6,7 @@ import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
 
+import org.apache.commons.lang.exception.ExceptionUtils;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -48,6 +49,16 @@ public class LoggingSCM extends SCM {
 		
 		listener.getLogger().println( "Thread2: " + Thread.currentThread().getId() );
 		listener.getLogger().println( "Thread2: " + Thread.currentThread().getName() );
+		
+		listener.getLogger().println( "Workspace: " + workspace.isRemote() );
+		listener.getLogger().println( "Workspace: " + workspace.getRemote() );
+		listener.getLogger().println( "Workspace: " + workspace.toURI() );
+		
+		try {
+			workspace.act( new RemoteTest( project ) );
+		} catch( Exception e ) {
+			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
+		}
 		
 		//return PollingResult.BUILD_NOW;
 		return PollingResult.NO_CHANGES;

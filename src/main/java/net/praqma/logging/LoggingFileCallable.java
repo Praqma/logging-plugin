@@ -19,6 +19,7 @@ import hudson.model.Item;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Actionable;
+import hudson.remoting.RemoteOutputStream;
 import hudson.remoting.VirtualChannel;
 
 public abstract class LoggingFileCallable<T> implements FileCallable<T> {
@@ -31,7 +32,7 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 		if( a instanceof AbstractBuild ) {
 			initialize( (AbstractBuild)a );
 		} else if( a instanceof AbstractProject ) {
-			initialize( (RemoteLoggable)a );
+			initialize( (AbstractProject)a );
 		}
 	}
 	
@@ -40,22 +41,27 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 		if( action != null ) {
 			lstream = action.getLoggingStream();
 			targets = action.getTargets();
-			remote = build.getWorkspace().isRemote();
+			//remote = build.getWorkspace().isRemote();
 			
 			action.getHandler().flush();
 		}
 	}
 	
-	private void initialize( RemoteLoggable build ) {
-		LoggingAction action = build.getAction( LoggingAction.class );
-		if( action != null ) {
-			lstream = action.getLoggingStream();
-			targets = action.getTargets();
-			remote = build.getWorkspace().isRemote();
-			
-			action.getHandler().flush();
+	private void initialize( AbstractProject<?, ?> project ) {
+		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
+		if( prop != null ) {
+			try {
+				LoggingAction action = prop.getLoggingAction();
+				if( action != null ) {
+					lstream = action.getLoggingStream();
+					targets = action.getTargets();
+				}
+			} catch( Exception e ) {
+				
+			}
 		}
 	}
+
 	
 	/*
 	private LoggingFileCallable( AbstractBuild<?, ?> build ) {
@@ -87,8 +93,11 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 			/* Tear down logger */
 			LoggingUtils.removeHandler( handler );
 			
+			new PrintStream( lstream.getOutputStream() ).println( "STREAM: " + lstream.getOutputStream() );
+			new PrintStream( lstream.getOutputStream() ).println( "REMOTE: " + isRemote() );
+			
 			/* If remote flush and close handler */
-			if( remote ) {
+			if( isRemote() ) {
 				try {
 					handler.flush();
 					handler.close();
@@ -100,6 +109,10 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 
 		return result;
 
+	}
+	
+	private boolean isRemote() {
+		return lstream.getOutputStream() instanceof RemoteOutputStream;
 	}
 
 }
