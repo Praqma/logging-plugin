@@ -1,6 +1,5 @@
 package net.praqma.logging;
 
-import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
 import java.util.HashSet;
@@ -45,7 +44,6 @@ public class LoggingHandler extends StreamHandler {
 	
 	public void addTargets( List<LoggerTarget> targets ) {
 		for( LoggerTarget t : targets ) {
-			System.out.println( "Adding " + t + " to " + this );
 			addTarget( t );
 			
 			/* Creating or updating existing loggers */
