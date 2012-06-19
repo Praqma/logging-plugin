@@ -51,7 +51,7 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
 		if( prop != null ) {
 			try {
-				LoggingAction action = prop.getLoggingAction();
+				LoggingAction action = prop.getLoggingAction( Thread.currentThread().getId() );
 				if( action != null ) {
 					lstream = action.getLoggingStream();
 					targets = action.getTargets();

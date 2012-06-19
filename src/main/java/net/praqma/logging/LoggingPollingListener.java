@@ -29,7 +29,8 @@ public class LoggingPollingListener extends SCMPollListener {
 
 			//List<? extends Action> actions = (List<? extends Action>) prop.getJobActions( project );
 			try {
-				LoggingAction action = prop.getLoggingAction();
+				long id = Thread.currentThread().getId();
+				LoggingAction action = prop.getLoggingAction( id );
 				
 				if( action != null ) {
 					
@@ -49,11 +50,12 @@ public class LoggingPollingListener extends SCMPollListener {
 	public void onAfterPolling( AbstractProject<?, ?> project, TaskListener listener ) {
 		listener.getLogger().println( "WHOOP! After polling..." );
 		
+		long id = Thread.currentThread().getId();
 		
 		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
 		if( prop != null ) {
 			try {
-				LoggingAction action = prop.getLoggingAction();
+				LoggingAction action = prop.getLoggingAction( id );
 				
 				if( action != null ) {
 					Logger rootLogger = Logger.getLogger( "" );
@@ -74,7 +76,7 @@ public class LoggingPollingListener extends SCMPollListener {
 			} catch( Exception e ) {
 				
 			} finally {
-				prop.resetPollhandler();
+				prop.resetPollhandler( id );
 			}
 		}
 		

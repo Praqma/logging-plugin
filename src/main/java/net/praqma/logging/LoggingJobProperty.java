@@ -7,7 +7,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import net.sf.json.JSONObject;
@@ -30,14 +32,16 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 
 	private boolean pollLogging = false;
 	
-	private LoggingHandler pollhandler;
+	private Map<Long, LoggingHandler> pollhandler = new HashMap<Long, LoggingHandler>();
 
 	@DataBoundConstructor
 	public LoggingJobProperty( boolean pollLogging ) {
 		this.pollLogging = pollLogging;
 	}
 	
-	public LoggingHandler getPollhandler() throws IOException {
+	public LoggingHandler getPollhandler( long id ) throws IOException {
+		LoggingHandler pollhandler = this.pollhandler.get( id );
+		
 		if( pollhandler == null ) {
 			System.out.println( "Creating new poll handler" );
 			File path = new File( owner.getRootDir(), "poll-logging" );
@@ -49,6 +53,8 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 			pollhandler = LoggingUtils.createHandler( fos );
 			
 			pollhandler.addTargets( getTargets() );
+			
+			this.pollhandler.put( id, pollhandler );
 		}
 		
 		System.out.println( "Poll handler = " + pollhandler );
@@ -56,12 +62,12 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		return pollhandler;
 	}
 	
-	public void resetPollhandler() {
-		pollhandler = null;
+	public void resetPollhandler( long id ) {
+		pollhandler.put( id, null );
 	}
 	
-	public LoggingAction getLoggingAction() throws IOException {
-		LoggingHandler handler = getPollhandler();
+	public LoggingAction getLoggingAction( long id ) throws IOException {
+		LoggingHandler handler = getPollhandler( id );
 		return new LoggingAction( handler, getTargets() );
 	}
 
