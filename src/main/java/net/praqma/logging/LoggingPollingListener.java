@@ -19,6 +19,7 @@ public class LoggingPollingListener extends SCMPollListener {
 		System.out.println( "PROP: " + prop );
 		System.out.println( "PROP: " + prop.isPollLogging() );
 		if( prop != null && prop.isPollLogging() ) {
+			System.out.println( "Setting up poll logging" );
 			try {
 				long id = Thread.currentThread().getId();
 				LoggingAction action = prop.getLoggingAction( id );
@@ -49,13 +50,10 @@ public class LoggingPollingListener extends SCMPollListener {
 				LoggingAction action = prop.getLoggingAction( id );
 				
 				if( action != null ) {
-					Logger rootLogger = Logger.getLogger( "" );
-					
-					Handler handler = action.getHandler();
+					LoggingHandler handler = action.getHandler();
+					handler.removeTargets();
 					handler.flush();
 					handler.close();
-
-					rootLogger.removeHandler( handler );
 
 					action.getOut().flush();
 					action.getOut().close();
