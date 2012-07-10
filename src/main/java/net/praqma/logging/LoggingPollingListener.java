@@ -7,6 +7,7 @@ import hudson.Extension;
 import hudson.model.TaskListener;
 import hudson.model.AbstractProject;
 import hudson.model.listeners.SCMPollListener;
+import hudson.scm.PollingResult;
 
 @Extension
 public class LoggingPollingListener extends SCMPollListener {
@@ -27,6 +28,15 @@ public class LoggingPollingListener extends SCMPollListener {
 	}
 	
 	@Override
+	public void onPollingSuccess( AbstractProject<?, ?> project, TaskListener listener, PollingResult result ) {
+		onAfterPolling( project, listener );
+	}
+	
+	@Override
+	public void onPollingFailed( AbstractProject<?, ?> project, TaskListener listener, Throwable exception ) {
+		onAfterPolling( project, listener );
+	}
+
 	public void onAfterPolling( AbstractProject<?, ?> project, TaskListener listener ) {
 		
 		long id = Thread.currentThread().getId();

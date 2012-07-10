@@ -16,7 +16,7 @@ public class RemoteTest extends LoggingFileCallable<Boolean> {
 	@Override
 	public Boolean perform( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 
-		Logger logger = Logger.getLogger( "snade.logger.remote" );
+		Logger logger = Logger.getLogger( "test.logger.remote" );
 		
 		logger.finest( "finest from LoggingFileCallable" );
 		logger.finer( "finer from LoggingFileCallable" );

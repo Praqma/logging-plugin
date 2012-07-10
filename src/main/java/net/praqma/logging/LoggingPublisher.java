@@ -1,18 +1,7 @@
 package net.praqma.logging;
 
-import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.PrintStream;
-import java.util.Collection;
-import java.util.Collections;
-import java.util.logging.Formatter;
-import java.util.logging.Handler;
-import java.util.logging.Level;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
-import java.util.logging.StreamHandler;
 
 import net.sf.json.JSONObject;
 
@@ -22,30 +11,18 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import hudson.Extension;
 import hudson.FilePath;
-import hudson.FilePath.FileCallable;
 import hudson.Launcher;
-import hudson.model.Action;
 import hudson.model.BuildListener;
-import hudson.model.TaskListener;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
-import hudson.remoting.Callable;
-import hudson.remoting.RemoteOutputStream;
-import hudson.remoting.VirtualChannel;
-import hudson.tasks.BuildStep;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.BuildStepMonitor;
 import hudson.tasks.Publisher;
 import hudson.tasks.Recorder;
-import hudson.util.StreamTaskListener;
 
 public class LoggingPublisher extends Recorder {
 	
 	private static Logger logger = Logger.getLogger( LoggingPublisher.class.getName() );
-	
-	static {
-		logger.setLevel( Level.ALL );
-	}
 	
 	@DataBoundConstructor
 	public LoggingPublisher() {
@@ -59,8 +36,6 @@ public class LoggingPublisher extends Recorder {
 	
 	@Override
 	public boolean perform( AbstractBuild<?, ?> build, Launcher launcher, BuildListener listener ) throws InterruptedException, IOException {
-		
-		//FileOutputStream fos = new FileOutputStream( new File( build.getRootDir(), "debug" ) );
 
 		int tid = (int) Thread.currentThread().getId();
 		System.out.println( "publisher thread " + tid );
@@ -79,45 +54,6 @@ public class LoggingPublisher extends Recorder {
 		} catch( Exception e ) {
 			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
 		}
-		
-		/*
-		TaskListener tl = new StreamTaskListener( new File( build.getRootDir(), "debug2" ) );
-		
-		FileOutputStream fo = new FileOutputStream(new File( build.getRootDir(), "debug" ));
-		LoggingAction action = new LoggingAction( fo );
-		build.addAction(action);
-		
-		Formatter formatterTxt = new SimpleFormatter();
-		StreamHandler sh = new StreamHandler( fo, formatterTxt );
-		sh.setLevel(Level.FINEST);
-		
-		Logger rootlogger = Logger.getLogger("");
-		rootlogger.addHandler(sh);
-		
-		Logger logger = Logger.getLogger("wolles.logger.to.com");
-		logger.setLevel(Level.INFO);
-		
-		logger.severe("My log");
-		
-		logger.info("FROM PUBLISHER LOGGER");
-		
-		FilePath workspace = build.getWorkspace();
-		
-		try {
-			//workspace.act( new RemoteLogger( tl ) );
-			workspace.act( new RemoteTest( build ) );
-		} catch( Exception e ) {
-			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
-		}
-		
-		logger.info("STOPPING...");
-		
-		PrintStream out = new PrintStream( fo );
-		out.println( "------------- ENDING ------------------" );
-		
-		sh.flush();
-		sh.close();
-		*/
 		
 		return true;
 		
