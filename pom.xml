@@ -12,7 +12,7 @@
 	<version>0.1.1-SNAPSHOT</version>
 	<name>Logging Plugin</name>
 	<description>Logger test for Jenkins</description>
-	<url>https://www.praqma.net</url>
+	<url>https://wiki.jenkins-ci.org/display/JENKINS/Logging-Plugin</url>
 	<packaging>hpi</packaging>
 
 	<properties>
