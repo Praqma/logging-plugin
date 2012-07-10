@@ -61,7 +61,7 @@ public class LoggingPublisher extends Recorder {
 	}
 
 	
-	@Extension
+	//@Extension
 	public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
 		public DescriptorImpl() {

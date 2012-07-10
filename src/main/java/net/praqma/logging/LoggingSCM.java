@@ -70,7 +70,7 @@ public class LoggingSCM extends SCM {
 		return null;
 	}
 	
-	@Extension
+	//@Extension
 	public static class LoggingSCMDescriptor extends SCMDescriptor<LoggingSCM> {
 
 		public LoggingSCMDescriptor() {
