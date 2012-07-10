@@ -21,7 +21,7 @@ public final class LoggingUtils {
 	 */
 	public static LoggingHandler createHandler( OutputStream fos ) {
 
-		Formatter formatter = new SimpleFormatter();
+		Formatter formatter = new PraqmaticFormatter();
 		LoggingHandler sh = new LoggingHandler( fos, formatter );
 
 		sh.setLevel( Level.ALL );
