@@ -2,9 +2,6 @@
 	xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
 
 	<f:optionalBlock name="debugLog" title="${%Enable logging for job}" checked="${instance!=null}">
-		<f:entry title="${%Level to log}">
-
-		</f:entry>
 		
 		<f:entry title="${%Acceptable logger names}">
 			<f:repeatable var="inst" varStatus="instStatus" items="${descriptor.getAcceptableLoggerNames(instance)}">
