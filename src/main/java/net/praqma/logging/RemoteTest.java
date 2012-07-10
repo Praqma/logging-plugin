@@ -18,6 +18,8 @@ public class RemoteTest extends LoggingFileCallable<Boolean> {
 
 		Logger logger = Logger.getLogger( "test.logger.remote" );
 		
+		System.out.println( "LEVEL: " + logger.getLevel() );
+		
 		logger.finest( "finest from LoggingFileCallable" );
 		logger.finer( "finer from LoggingFileCallable" );
 		logger.fine( "fine from LoggingFileCallable" );

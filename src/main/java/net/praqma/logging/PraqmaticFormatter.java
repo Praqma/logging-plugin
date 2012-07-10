@@ -12,7 +12,7 @@ public class PraqmaticFormatter extends Formatter {
 	private static final int width = 8;
 	private boolean enableLineNumbers = true;
 	
-	private MessageFormat messageFormat = new MessageFormat( "{3,date,hh:mm:ss} [{1}]{5} {6}.{7}, {99}: {4} \n" );
+	private MessageFormat messageFormat = new MessageFormat( "{3,date,HH:mm:ss} [{1}]{5} {6}.{7}, {99}: {4} \n" );
 	
 	public PraqmaticFormatter() {}
 	

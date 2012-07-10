@@ -16,7 +16,9 @@ public class LoggingPollingListener extends SCMPollListener {
 	public void onBeforePolling( AbstractProject<?, ?> project, TaskListener listener ) {
 		
 		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
-		if( prop != null ) {
+		System.out.println( "PROP: " + prop );
+		System.out.println( "PROP: " + prop.isPollLogging() );
+		if( prop != null && prop.isPollLogging() ) {
 			try {
 				long id = Thread.currentThread().getId();
 				LoggingAction action = prop.getLoggingAction( id );

@@ -30,6 +30,7 @@ public class LoggingHandler extends StreamHandler {
 		return out;
 	}
 	
+	/*
 	public void addTarget( String name, String level ) {
 		targets.add( new LoggingTarget( name, level ) );
 	}
@@ -41,18 +42,39 @@ public class LoggingHandler extends StreamHandler {
 	public void addTarget( Set<LoggingTarget> targets ) {
 		targets.addAll( targets );
 	}
+	*/
+	
+	public void addTarget( LoggingTarget target ) {
+		targets.add( target );
+		
+		/* Creating or updating existing loggers */
+		Logger logger = LogManager.getLogManager().getLogger( target.getName() );
+		if( logger != null ) {
+			logger.setLevel( Level.ALL );
+			logger.setUseParentHandlers( false );
+			logger.addHandler( this );
+		} else {
+			Logger nlogger = Logger.getLogger( target.getName() );
+			nlogger.setLevel( Level.ALL );
+			nlogger.setUseParentHandlers( false );
+			nlogger.addHandler( this );
+		}
+	}
 	
 	public void addTargets( List<LoggingTarget> targets ) {
 		for( LoggingTarget t : targets ) {
 			addTarget( t );
-			
-			/* Creating or updating existing loggers */
+		}
+	}
+	
+	public void removeTargets() {
+		for( LoggingTarget t : targets ) {
 			Logger logger = LogManager.getLogManager().getLogger( t.getName() );
 			if( logger != null ) {
-				logger.setLevel( Level.ALL );
+				logger.removeHandler( this );
 			} else {
 				Logger nlogger = Logger.getLogger( t.getName() );
-				nlogger.setLevel( Level.ALL );
+				nlogger.removeHandler( this );
 			}
 		}
 	}
@@ -77,7 +99,7 @@ public class LoggingHandler extends StreamHandler {
 	}
 	
 	private boolean checkTarget( LoggingTarget target, LogRecord lr ) {
-		
+
 		if( lr.getLevel().intValue() < target.getLogLevel() ) {
 			return false;
 		}
@@ -88,7 +110,6 @@ public class LoggingHandler extends StreamHandler {
 
 		String rest = lr.getLoggerName().substring( target.getName().length() );
 		if( rest.length() == 0 || rest.startsWith( "." ) ) {
-			
 			return true;
 		}
 		

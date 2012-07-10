@@ -3,6 +3,8 @@ package net.praqma.logging;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.PrintStream;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
@@ -50,7 +52,7 @@ public class LoggingRunListener extends RunListener<Run> {
 				action.setHandler( handler );
 				
 				handler.addTargets( prop.getTargets() );
-
+				
 			} catch( FileNotFoundException e ) {
 				e.printStackTrace();
 			}
@@ -61,16 +63,24 @@ public class LoggingRunListener extends RunListener<Run> {
 
 	@Override
 	public void onCompleted( Run r, TaskListener listener ) {
-		Logger rootLogger = Logger.getLogger( "" );
-
+		
 		LoggingAction action = r.getAction( LoggingAction.class );
 		
 		if( action != null ) {
-			Handler handler = action.getHandler();
+			LoggingHandler handler = action.getHandler();
+			handler.removeTargets();
+			
 			handler.flush();
 			handler.close();
+
+			try {
+				action.getOut().flush();
+				action.getOut().close();
+			} catch( IOException e ) {
+				listener.getLogger().println( "Failed to tear down logger: " + e.getMessage() );
+				e.printStackTrace();
+			}
 			
-			rootLogger.removeHandler( handler );
 		}
 	}
 

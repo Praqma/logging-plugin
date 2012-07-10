@@ -1,14 +1,10 @@
 package net.praqma.logging;
 
-import java.io.FileOutputStream;
 import java.io.OutputStream;
-import java.util.List;
 import java.util.logging.Formatter;
 import java.util.logging.Handler;
 import java.util.logging.Level;
-import java.util.logging.LogManager;
 import java.util.logging.Logger;
-import java.util.logging.SimpleFormatter;
 
 public final class LoggingUtils {
 
@@ -26,8 +22,8 @@ public final class LoggingUtils {
 
 		sh.setLevel( Level.ALL );
 
-		Logger rootLogger = Logger.getLogger( "" );
-		rootLogger.addHandler( sh );
+		//Logger rootLogger = Logger.getLogger( "" );
+		//rootLogger.addHandler( sh );
 
 		return sh;
 	}

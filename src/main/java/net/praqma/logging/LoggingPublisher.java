@@ -51,6 +51,7 @@ public class LoggingPublisher extends Recorder {
 		try {
 			FilePath workspace = build.getWorkspace();
 			workspace.act( new RemoteTest( build ) );
+			//workspace.actAsync( new RemoteTest( build ) ).get();
 		} catch( Exception e ) {
 			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
 		}

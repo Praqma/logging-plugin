@@ -16,8 +16,10 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 
 	protected LoggingStream lstream;
 	private List<LoggingTarget> targets;
+	private long threadId;
 
 	public LoggingFileCallable( Actionable a ) {
+		threadId = Thread.currentThread().getId();
 		if( a instanceof AbstractBuild ) {
 			initialize( (AbstractBuild)a );
 		} else if( a instanceof AbstractProject ) {
@@ -55,30 +57,40 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	@Override
 	public T invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 
+		long currentThreadId = Thread.currentThread().getId();
+		
+		new PrintStream( lstream.getOutputStream() ).println( "THREAD: " + Thread.currentThread().getName() + "::" + Thread.currentThread().getId() );
+		new PrintStream( lstream.getOutputStream() ).println( "STREAM: " + lstream.getOutputStream() );
+		new PrintStream( lstream.getOutputStream() ).println( "REMOTE: " + isRemote() );
+		new PrintStream( lstream.getOutputStream() ).println( "WS: " + workspace.getAbsoluteFile() );
+		
 		/* Setup logger */
-		LoggingHandler handler = LoggingUtils.createHandler( lstream.getOutputStream() );
-		handler.addTargets( targets );
-
 		T result = null;
-		try {
-			result = perform( workspace, channel );
-		} finally {
-			/* Tear down logger */
-			LoggingUtils.removeHandler( handler );
-			
-			new PrintStream( lstream.getOutputStream() ).println( "STREAM: " + lstream.getOutputStream() );
-			new PrintStream( lstream.getOutputStream() ).println( "REMOTE: " + isRemote() );
-			new PrintStream( lstream.getOutputStream() ).println( "WS: " + workspace.getAbsoluteFile() );
-			
-			/* If remote flush and close handler */
-			if( isRemote() ) {
+		/* Do this if remote or on another stream than caller */
+		if( isRemote() || ( !isRemote() && threadId != currentThreadId ) ) {
+			LoggingHandler handler = LoggingUtils.createHandler( lstream.getOutputStream() );
+			handler.addTargets( targets );
+	
+			try {
+				result = perform( workspace, channel );
+			} finally {
+				/* Tear down logger */
+				//LoggingUtils.removeHandler( handler );
+							
+				handler.removeTargets();
+				
+				/* If remote flush and close handler */
 				try {
 					handler.flush();
 					handler.close();
+					handler.getOut().flush();
+					handler.getOut().close();
 				} catch( Exception e ) {
 					/* Unable to close handler */
 				}
 			}
+		} else {
+			result = perform( workspace, channel );
 		}
 
 		return result;
