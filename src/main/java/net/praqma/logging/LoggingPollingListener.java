@@ -1,8 +1,5 @@
 package net.praqma.logging;
 
-import java.util.logging.Handler;
-import java.util.logging.Logger;
-
 import hudson.Extension;
 import hudson.model.TaskListener;
 import hudson.model.AbstractProject;
@@ -16,10 +13,7 @@ public class LoggingPollingListener extends SCMPollListener {
 	public void onBeforePolling( AbstractProject<?, ?> project, TaskListener listener ) {
 		
 		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
-		System.out.println( "PROP: " + prop );
-		System.out.println( "PROP: " + prop.isPollLogging() );
 		if( prop != null && prop.isPollLogging() ) {
-			System.out.println( "Setting up poll logging" );
 			try {
 				long id = Thread.currentThread().getId();
 				LoggingAction action = prop.getLoggingAction( id );

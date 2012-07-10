@@ -38,11 +38,9 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	}
 	
 	private void initialize( AbstractProject<?, ?> project ) {
-		System.out.println( "IN HERE1" );
 		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
 		if( prop != null && prop.isPollLogging() ) {
 			try {
-				System.out.println( "IN HERE2" );
 				LoggingAction action = prop.getLoggingAction( Thread.currentThread().getId() );
 				if( action != null ) {
 					lstream = action.getLoggingStream();

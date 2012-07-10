@@ -35,7 +35,7 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	
 	public LoggingHandler getPollhandler( long id ) throws IOException {
 		LoggingHandler pollhandler = this.pollhandler.get( id );
-		System.out.println( "SETTING UP POLL LOG: " + id );
+		
 		if( pollhandler == null ) {
 			File path = new File( owner.getRootDir(), "poll-logging" );
 			if( !path.exists() ) {
