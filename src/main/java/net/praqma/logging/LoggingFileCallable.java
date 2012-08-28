@@ -58,16 +58,18 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	public T invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 
 		long currentThreadId = Thread.currentThread().getId();
-		
-		new PrintStream( lstream.getOutputStream() ).println( "THREAD: " + Thread.currentThread().getName() + "::" + Thread.currentThread().getId() );
-		new PrintStream( lstream.getOutputStream() ).println( "STREAM: " + lstream.getOutputStream() );
-		new PrintStream( lstream.getOutputStream() ).println( "REMOTE: " + isRemote() );
-		new PrintStream( lstream.getOutputStream() ).println( "WS: " + workspace.getAbsoluteFile() );
+        
+        if( lstream != null ) {
+            new PrintStream( lstream.getOutputStream() ).println( "THREAD: " + Thread.currentThread().getName() + "::" + Thread.currentThread().getId() );
+            new PrintStream( lstream.getOutputStream() ).println( "STREAM: " + lstream.getOutputStream() );
+            new PrintStream( lstream.getOutputStream() ).println( "REMOTE: " + isRemote() );
+            new PrintStream( lstream.getOutputStream() ).println( "WS: " + workspace.getAbsoluteFile() );
+        }
 		
 		/* Setup logger */
 		T result = null;
 		/* Do this if remote or on another stream than caller */
-		if( isRemote() || ( !isRemote() && threadId != currentThreadId ) ) {
+		if( lstream != null && ( isRemote() || ( !isRemote() && threadId != currentThreadId ) ) ) {
 			LoggingHandler handler = LoggingUtils.createHandler( lstream.getOutputStream() );
 			handler.addTargets( targets );
 	
@@ -98,7 +100,7 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	}
 	
 	private boolean isRemote() {
-		return lstream.getOutputStream() instanceof RemoteOutputStream;
+		return lstream != null && lstream.getOutputStream() instanceof RemoteOutputStream;
 	}
 
 }
