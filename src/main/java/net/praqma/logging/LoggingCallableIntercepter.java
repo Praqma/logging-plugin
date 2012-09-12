@@ -1,24 +1,33 @@
 package net.praqma.logging;
 
-import java.io.File;
-import java.io.IOException;
-import java.io.PrintStream;
-import java.util.List;
-
+import hudson.Extension;
+import hudson.FilePath;
 import hudson.FilePath.FileCallable;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.Actionable;
+import hudson.remoting.DelegatingCallable;
 import hudson.remoting.RemoteOutputStream;
 import hudson.remoting.VirtualChannel;
 
-public abstract class LoggingFileCallable<T> implements FileCallable<T> {
+import java.io.File;
+import java.io.IOException;
+import java.io.PrintStream;
+import java.io.Serializable;
+import java.util.List;
+
+@Extension
+public class LoggingCallableIntercepter<T> extends FilePath.FileCallableWrapperFactory implements Serializable {
 
 	protected LoggingStream lstream;
 	private List<LoggingTarget> targets;
 	private long threadId;
 
-	public LoggingFileCallable( Actionable a ) {
+    public LoggingCallableIntercepter(){
+        System.out.println( "LOGGING DEFAULT CONSTRUCTORORORORORO!!!" );
+    }
+
+	public LoggingCallableIntercepter( Actionable a ) {
 		threadId = Thread.currentThread().getId();
 		if( a instanceof AbstractBuild ) {
 			initialize( (AbstractBuild)a );
@@ -52,9 +61,31 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 		}
 	}
 
-	public abstract T perform( File workspace, VirtualChannel channel ) throws IOException, InterruptedException;
+    @Override
+    public <T> DelegatingCallable<T, IOException> wrap( DelegatingCallable<T, IOException> callable ) {
+        System.out.println( "--------------------> WRAPPING!!!!" );
+        return new Class( callable );
+    }
 
-	@Override
+    public class Class<T1> extends FilePath.AbstractInterceptorCallableWrapper<T1> {
+        public Class(DelegatingCallable<T1, IOException> callable) {
+            super( callable );
+        }
+
+        @Override
+        public void before() {
+            System.out.println( "-------------> YAY <------------------" );
+            if( lstream != null ) {
+                new PrintStream( lstream.getOutputStream() ).println( "THREAD: " + Thread.currentThread().getName() + "::" + Thread.currentThread().getId() );
+            }
+        }
+
+        @Override
+        public void after() {
+
+        }
+    }
+
 	public T invoke( File workspace, VirtualChannel channel ) throws IOException, InterruptedException {
 
 		long currentThreadId = Thread.currentThread().getId();
@@ -74,7 +105,7 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 			handler.addTargets( targets );
 	
 			try {
-				result = perform( workspace, channel );
+				//result = perform( workspace, channel );
 			} finally {
 				/* Tear down logger */
 				//LoggingUtils.removeHandler( handler );
@@ -92,7 +123,7 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 				}
 			}
 		} else {
-			result = perform( workspace, channel );
+			//result = perform( workspace, channel );
 		}
 
 		return result;
@@ -102,5 +133,6 @@ public abstract class LoggingFileCallable<T> implements FileCallable<T> {
 	private boolean isRemote() {
 		return lstream != null && lstream.getOutputStream() instanceof RemoteOutputStream;
 	}
+
 
 }

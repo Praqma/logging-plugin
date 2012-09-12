@@ -50,7 +50,7 @@ public class LoggingPublisher extends Recorder {
 		
 		try {
 			FilePath workspace = build.getWorkspace();
-			workspace.act( new RemoteTest( build ) );
+			workspace.act( new RemoteTest() );
 			//workspace.actAsync( new RemoteTest( build ) ).get();
 		} catch( Exception e ) {
 			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
@@ -61,7 +61,7 @@ public class LoggingPublisher extends Recorder {
 	}
 
 	
-	//@Extension
+	@Extension
 	public static final class DescriptorImpl extends BuildStepDescriptor<Publisher> {
 
 		public DescriptorImpl() {

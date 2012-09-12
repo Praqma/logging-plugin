@@ -52,7 +52,7 @@ public class LoggingSCM extends SCM {
 		logger.severe( "severe from local SCM" );
 		
 		try {
-			workspace.act( new RemoteTest( project ) );
+			workspace.act( new RemoteTest() );
 		} catch( Exception e ) {
 			ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
 		}
@@ -70,7 +70,7 @@ public class LoggingSCM extends SCM {
 		return null;
 	}
 	
-	//@Extension
+	@Extension
 	public static class LoggingSCMDescriptor extends SCMDescriptor<LoggingSCM> {
 
 		public LoggingSCMDescriptor() {

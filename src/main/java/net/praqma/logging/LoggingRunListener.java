@@ -8,12 +8,16 @@ import java.io.PrintStream;
 import java.util.logging.Handler;
 import java.util.logging.Logger;
 
+import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 import hudson.Extension;
+import hudson.ExtensionList;
+import hudson.FilePath;
 import hudson.matrix.MatrixRun;
 import hudson.model.TaskListener;
 import hudson.model.Job;
 import hudson.model.Run;
 import hudson.model.listeners.RunListener;
+import jenkins.model.Jenkins;
 
 @Extension
 public class LoggingRunListener extends RunListener<Run> {
@@ -52,6 +56,11 @@ public class LoggingRunListener extends RunListener<Run> {
 				action.setHandler( handler );
 				
 				handler.addTargets( prop.getTargets() );
+
+                ExtensionList list = Jenkins.getInstance().getExtensionList( FilePath.FileCallableWrapperFactory.class );
+                System.out.println( "# extensions: " + list.size() );
+                LoggingCallableIntercepter inst = (LoggingCallableIntercepter) list.get( LoggingCallableIntercepter.class );
+                System.out.println( "INST: "  + inst );
 				
 			} catch( FileNotFoundException e ) {
 				e.printStackTrace();

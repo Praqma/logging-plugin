@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.474</version>
+		<version>1.483-SNAPSHOT</version>
 	</parent>
 
 	<groupId>net.praqma</groupId>
