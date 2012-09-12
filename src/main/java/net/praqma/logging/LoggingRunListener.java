@@ -36,9 +36,9 @@ public class LoggingRunListener extends RunListener<Run> {
 
 			FileOutputStream fos;
 			try {
-				File file = new File( r.getRootDir(), "debug" );
+				File file = new File( r.getRootDir(), Logging.LOGFILENAME );
 				fos = new FileOutputStream( file );
-				LoggingAction action = new LoggingAction( fos, prop.getTargets() );
+				LoggingAction action = new LoggingAction( (AbstractBuild) r, fos, prop.getTargets() );
 
 				r.addAction( action );
 

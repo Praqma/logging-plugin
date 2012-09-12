@@ -59,7 +59,7 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	
 	public LoggingAction getLoggingAction( long id ) throws IOException {
 		LoggingHandler handler = getPollhandler( id );
-		return new LoggingAction( handler, getTargets() );
+		return new LoggingAction( null, handler, getTargets() );
 	}
 
 
