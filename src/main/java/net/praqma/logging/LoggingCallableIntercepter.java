@@ -43,7 +43,6 @@ public class LoggingCallableIntercepter<T> extends FilePath.FileCallableWrapperF
             super( callable );
 
             Actionable a = actionables.get();
-            System.out.println( "ACTIONABLE: " + a );
 
             if( a != null ) {
                 threadId = Thread.currentThread().getId();
@@ -53,8 +52,6 @@ public class LoggingCallableIntercepter<T> extends FilePath.FileCallableWrapperF
                     initialize( (AbstractProject) a );
                 }
             }
-
-            System.out.println( "LSTREAM: " + lstream );
         }
 
         @Override
@@ -108,11 +105,4 @@ public class LoggingCallableIntercepter<T> extends FilePath.FileCallableWrapperF
             }
         }
     }
-/*
-	private boolean isRemote() {
-		return lstream != null && lstream.getOutputStream() instanceof RemoteOutputStream;
-	}
-	*/
-
-
 }
