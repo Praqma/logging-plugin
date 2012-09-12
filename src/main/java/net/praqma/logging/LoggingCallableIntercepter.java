@@ -68,7 +68,7 @@ public class LoggingCallableIntercepter<T> extends FilePath.FileCallableWrapperF
             if( handler != null ) {
                 handler.removeTargets();
 
-                /* If remote flush and close handler */
+                /* Flush and close handler */
                 try {
                     handler.flush();
                     handler.close();
