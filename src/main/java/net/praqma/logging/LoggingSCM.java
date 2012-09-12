@@ -42,7 +42,7 @@ public class LoggingSCM extends SCM {
 
 	@Override
 	protected PollingResult compareRemoteRevisionWith( AbstractProject<?, ?> project, Launcher launcher, FilePath workspace, TaskListener listener, SCMRevisionState baseline ) throws IOException, InterruptedException {
-		
+
 		logger.finest( "finest from local SCM" );
 		logger.finer( "finer from local SCM" );
 		logger.fine( "fine from local SCM" );
@@ -62,6 +62,20 @@ public class LoggingSCM extends SCM {
 
 	@Override
 	public boolean checkout( AbstractBuild<?, ?> build, Launcher launcher, FilePath workspace, BuildListener listener, File changelogFile ) throws IOException, InterruptedException {
+
+        logger.finest( "finest from local checkout" );
+        logger.finer( "finer from local checkout" );
+        logger.fine( "fine from local checkout" );
+        logger.config( "config from local checkout" );
+        logger.info( "info from local checkout" );
+        logger.warning( "warning from local checkout" );
+        logger.severe( "severe from local checkout" );
+
+        try {
+            workspace.act( new RemoteTest() );
+        } catch( Exception e ) {
+            ExceptionUtils.printRootCauseStackTrace( e, listener.getLogger() );
+        }
 		return true;
 	}
 

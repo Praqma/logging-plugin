@@ -17,6 +17,7 @@ public class LoggingPollingListener extends SCMPollListener {
 			try {
 				long id = Thread.currentThread().getId();
 				LoggingAction action = prop.getLoggingAction( id );
+                LoggingCallableIntercepter.setActionable( project );
 			} catch( Exception e ) {
 				listener.getLogger().println( "Failed to instantiate logger: " + e.getMessage() );
 				e.printStackTrace();
