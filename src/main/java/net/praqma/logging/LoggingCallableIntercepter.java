@@ -94,7 +94,7 @@ public class LoggingCallableIntercepter<T> extends FilePath.FileCallableWrapperF
             LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
             if( prop != null && prop.isPollLogging() ) {
                 try {
-                    LoggingAction action = prop.getLoggingAction( Thread.currentThread().getId() );
+                    LoggingAction action = prop.getLoggingAction( Thread.currentThread().getId(), "" );
                     if( action != null ) {
                         lstream = action.getLoggingStream();
                         targets = action.getTargets();

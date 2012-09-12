@@ -3,20 +3,15 @@ package net.praqma.logging;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
+import hudson.model.*;
 import net.sf.json.JSONObject;
 
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.StaplerRequest;
 
 import hudson.Extension;
-import hudson.model.JobProperty;
-import hudson.model.JobPropertyDescriptor;
-import hudson.model.Job;
 
 public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 
@@ -33,15 +28,21 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		this.pollLogging = pollLogging;
 	}
 	
-	public LoggingHandler getPollhandler( long id ) throws IOException {
+	public LoggingHandler getPollhandler( long id, String name ) throws IOException {
 		LoggingHandler pollhandler = this.pollhandler.get( id );
 		
-		if( pollhandler == null ) {
+		if( pollhandler == null && name != null ) {
 			File path = new File( owner.getRootDir(), "poll-logging" );
 			if( !path.exists() ) {
 				path.mkdir();
 			}
-			File file = new File( path, "logging" );
+			//File file = new File( path, "logging" );
+
+            /* Pruning */
+            File[] logs = Logging.getLogs( path );
+            Logging.prune( logs, 7 );
+
+            File file = Logging.getLogFile( path, name );
 			FileOutputStream fos = new FileOutputStream( file, true );
 			pollhandler = LoggingUtils.createHandler( fos );
 			
@@ -57,10 +58,22 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		pollhandler.put( id, null );
 	}
 	
-	public LoggingAction getLoggingAction( long id ) throws IOException {
-		LoggingHandler handler = getPollhandler( id );
-		return new LoggingAction( null, handler, getTargets() );
+	public LoggingAction getLoggingAction( long id, String name ) throws IOException {
+        System.out.println( "STRUNG; " + name );
+		LoggingHandler handler = getPollhandler( id, name );
+        if( handler != null ) {
+		    return new LoggingAction( null, handler, getTargets() );
+        } else {
+            return null;
+        }
 	}
+
+    @Override
+    public Collection<Action> getJobActions( AbstractProject<?, ?> project ) {
+        List<LoggingProjectAction> list = new ArrayList<LoggingProjectAction>();
+        list.add(new LoggingProjectAction());
+        return (Collection<Action>) list;
+    }
 
 
 	private void setTargets( List<LoggingTarget> targets ) {

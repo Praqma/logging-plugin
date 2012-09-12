@@ -11,12 +11,11 @@ public class LoggingPollingListener extends SCMPollListener {
 
 	@Override
 	public void onBeforePolling( AbstractProject<?, ?> project, TaskListener listener ) {
-		
 		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
 		if( prop != null && prop.isPollLogging() ) {
 			try {
 				long id = Thread.currentThread().getId();
-				LoggingAction action = prop.getLoggingAction( id );
+				LoggingAction action = prop.getLoggingAction( id, project.getDisplayName() + "-" + project.getNextBuildNumber() );
                 LoggingCallableIntercepter.setActionable( project );
 			} catch( Exception e ) {
 				listener.getLogger().println( "Failed to instantiate logger: " + e.getMessage() );
@@ -36,13 +35,12 @@ public class LoggingPollingListener extends SCMPollListener {
 	}
 
 	public void onAfterPolling( AbstractProject<?, ?> project, TaskListener listener ) {
-		
 		long id = Thread.currentThread().getId();
 		
 		LoggingJobProperty prop = (LoggingJobProperty) project.getProperty( LoggingJobProperty.class );
 		if( prop != null ) {
 			try {
-				LoggingAction action = prop.getLoggingAction( id );
+				LoggingAction action = prop.getLoggingAction( id, null );
 				
 				if( action != null ) {
 					LoggingHandler handler = action.getHandler();

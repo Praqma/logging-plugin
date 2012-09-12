@@ -1,11 +1,21 @@
 package net.praqma.logging;
 
-/**
- * Created with IntelliJ IDEA.
- * User: wolfgang
- * Date: 12-09-12
- * Time: 22:38
- * To change this template use File | Settings | File Templates.
- */
-public class LoggingProjectAction {
+import hudson.model.ProminentProjectAction;
+
+public class LoggingProjectAction implements ProminentProjectAction {
+
+    @Override
+    public String getIconFileName() {
+        return "/plugin/logging/images/notebook.png";
+    }
+
+    @Override
+    public String getDisplayName() {
+        return "Poll Logging";
+    }
+
+    @Override
+    public String getUrlName() {
+        return "poll-logging";
+    }
 }
