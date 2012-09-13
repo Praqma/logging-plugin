@@ -1,7 +1,5 @@
 package net.praqma.logging;
 
-import org.apache.oro.text.regex.PatternMatcher;
-
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.DateFormat;
@@ -71,17 +69,6 @@ public class Logging {
         } );
     }
 
-    public static Date getDate( File log ) {
-        int l = log.getName().length();
-        String date = log.getName().substring( l - 12, l - 4 );
-        System.out.println( "DATE FOR " + log + ": " + date );
-        try {
-            return dateFormat.get().parse( date );
-        } catch( Exception e ) {
-            throw new IllegalStateException( "Unable to parse " + log.getName() + " for date." );
-        }
-    }
-
     private static final Pattern rx_logfile = Pattern.compile( "^(.+)-(\\d+)\\.(\\d+)\\.log$" );
 
     public static PollLoggingFile getPollLogFile( File log ) {
@@ -132,7 +119,6 @@ public class Logging {
             for( File log : logs ) {
                 int l = log.getName().length();
                 String date = log.getName().substring( l - 12, l - 4 );
-                System.out.println( "DATE FOR " + log + ": " + date );
                 try {
                     Date d = dateFormat.get().parse( date );
                     if( d.before( cal.getTime() ) ) {

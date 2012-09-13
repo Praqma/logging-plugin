@@ -27,12 +27,12 @@ public class LoggingProjectAction implements ProminentProjectAction {
 
     @Override
     public String getDisplayName() {
-        return "Poll Logging";
+        return "Poll Logs";
     }
 
     @Override
     public String getUrlName() {
-        return "poll-logging";
+        return "poll-logs";
     }
 
     public List<Logging.PollLoggingFile> getLogs() {
@@ -52,7 +52,7 @@ public class LoggingProjectAction implements ProminentProjectAction {
             t.setTimeInMillis(logFile.lastModified());
             rsp.serveFile( req, FileUtils.openInputStream( logFile ), t.getTimeInMillis(), logFile.getTotalSpace(), logFile.getName() );
         } else {
-            rsp.sendError( HttpServletResponse.SC_NO_CONTENT );
+            rsp.sendError( HttpServletResponse.SC_NOT_FOUND );
         }
     }
 }

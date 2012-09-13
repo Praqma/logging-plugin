@@ -64,10 +64,10 @@ public class LoggingAction implements Action {
             if( dm.exists() ) {
                 rsp.serveFile( req, FileUtils.openInputStream( dm ), t.getTimeInMillis(), dm.getTotalSpace(), Logging.LOGFILENAME );
             } else {
-                rsp.sendError( HttpServletResponse.SC_NO_CONTENT );
+                rsp.sendError( HttpServletResponse.SC_NOT_FOUND );
             }
         } else {
-            rsp.sendError( HttpServletResponse.SC_NO_CONTENT );
+            rsp.sendError( HttpServletResponse.SC_NOT_FOUND );
         }
     }
 

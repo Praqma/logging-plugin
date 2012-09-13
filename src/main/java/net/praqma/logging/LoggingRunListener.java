@@ -50,17 +50,6 @@ public class LoggingRunListener extends RunListener<Run> {
 
                 LoggingCallableIntercepter.setActionable( r );
 
-                /*
-                ExtensionList list = Jenkins.getInstance().getExtensionList( FilePath.FileCallableWrapperFactory.class );
-                LoggingCallableIntercepter inst = (LoggingCallableIntercepter) list.get( LoggingCallableIntercepter.class );
-                if( inst != null ) {
-                    LoggingSlaveSetting s = new LoggingSlaveSetting();
-                    s.setLstream( action.getLoggingStream() );
-                    s.setTargets( action.getTargets() );
-                    inst.setSetting( s );
-                }
-                */
-				
 			} catch( FileNotFoundException e ) {
 				e.printStackTrace();
 			}

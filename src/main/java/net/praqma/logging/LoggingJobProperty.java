@@ -38,7 +38,6 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 			if( !path.exists() ) {
 				path.mkdir();
 			}
-			//File file = new File( path, "logging" );
 
             /* Pruning */
             File[] logs = Logging.getLogs( path );

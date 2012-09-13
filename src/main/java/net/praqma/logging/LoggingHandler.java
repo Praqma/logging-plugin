@@ -30,20 +30,6 @@ public class LoggingHandler extends StreamHandler {
 		return out;
 	}
 	
-	/*
-	public void addTarget( String name, String level ) {
-		targets.add( new LoggingTarget( name, level ) );
-	}
-	
-	public void addTarget( LoggingTarget target ) {
-		targets.add( target );
-	}
-	
-	public void addTarget( Set<LoggingTarget> targets ) {
-		targets.addAll( targets );
-	}
-	*/
-	
 	public void addTarget( LoggingTarget target ) {
 		targets.add( target );
 		

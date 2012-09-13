@@ -18,10 +18,6 @@ public final class LoggingUtils {
 		LoggingHandler sh = new LoggingHandler( fos, formatter );
 
 		sh.setLevel( Level.ALL );
-
-		//Logger rootLogger = Logger.getLogger( "" );
-		//rootLogger.addHandler( sh );
-
 		return sh;
 	}
 	
