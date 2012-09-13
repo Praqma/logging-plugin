@@ -20,12 +20,14 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	private List<LoggingTarget> targets;
 
 	private boolean pollLogging = false;
+    private int pruneDays = 0;
 	
 	private Map<Long, LoggingHandler> pollhandler = new HashMap<Long, LoggingHandler>();
 
 	@DataBoundConstructor
-	public LoggingJobProperty( boolean pollLogging ) {
+	public LoggingJobProperty( boolean pollLogging, int pruneDays ) {
 		this.pollLogging = pollLogging;
+        this.pruneDays = pruneDays;
 	}
 	
 	public LoggingHandler getPollhandler( long id, String name ) throws IOException {
@@ -40,7 +42,7 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 
             /* Pruning */
             File[] logs = Logging.getLogs( path );
-            Logging.prune( logs, 7 );
+            Logging.prune( logs, pruneDays );
 
             File file = Logging.getLogFile( path, name );
 			FileOutputStream fos = new FileOutputStream( file, true );
@@ -86,6 +88,10 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		return pollLogging;
 	}
 
+    public int getPruneDays() {
+        return pruneDays;
+    }
+
 	@Extension
 	public static class DescriptorImpl extends JobPropertyDescriptor {
 
@@ -98,8 +104,9 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 				JSONObject debugJSON = (JSONObject) debugObject;
 
 				boolean pollLogging = debugJSON.getBoolean( "pollLogging" );
+                int pruneDays = debugJSON.getInt( "pruneDays" );
 
-				LoggingJobProperty instance = new LoggingJobProperty( pollLogging );
+				LoggingJobProperty instance = new LoggingJobProperty( pollLogging, pruneDays );
 
 				List<LoggingTarget> targets = req.bindParametersToList( LoggingTarget.class, "logging.logger." );
 				instance.setTargets( targets );
@@ -123,6 +130,10 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		public String[] getLogLevels() {
 			return levels;
 		}
+
+        public int[] getDays() {
+            return new int[]{0,1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29,30};
+        }
 
 		public List<LoggingTarget> getAcceptableLoggerNames( LoggingJobProperty instance ) {
 			if( instance == null ) {

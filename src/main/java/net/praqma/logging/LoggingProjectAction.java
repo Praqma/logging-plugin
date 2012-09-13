@@ -10,9 +10,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletResponse;
 import java.io.File;
 import java.io.IOException;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.List;
+import java.util.*;
 
 public class LoggingProjectAction implements ProminentProjectAction {
 
@@ -38,7 +36,9 @@ public class LoggingProjectAction implements ProminentProjectAction {
     }
 
     public List<Logging.PollLoggingFile> getLogs() {
-        return Logging.getPollLogs( new File( job.getRootDir(), Logging.POLLLOGPATH ) );
+        List<Logging.PollLoggingFile> list = Logging.getPollLogs( new File( job.getRootDir(), Logging.POLLLOGPATH ) );
+        Collections.sort( list, new Logging.ComparePollLogs() );
+        return list;
     }
 
     public void doGetPollLog( StaplerRequest req, StaplerResponse rsp ) throws IOException, ServletException {

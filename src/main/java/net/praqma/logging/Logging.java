@@ -7,10 +7,7 @@ import java.io.FilenameFilter;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -19,7 +16,6 @@ public class Logging {
 
     public static final String LOGFILENAME = "debug.log";
     public static final String POLLLOGPATH = "poll-logging";
-    //private static DateFormat dateFormatter = new SimpleDateFormat( "yyyyMMdd" );
 
     private static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
         @Override
@@ -36,6 +32,21 @@ public class Logging {
     };
 
     private static Logger logger = Logger.getLogger( Logging.class.getName() );
+
+    public static class ComparePollLogs implements Comparator<PollLoggingFile> {
+        @Override
+        public int compare( PollLoggingFile o1, PollLoggingFile o2 ) {
+            if( o1.number == o2.number ) {
+                if( o1.date.before( o2.date ) ) {
+                    return 1;
+                } else {
+                    return -1;
+                }
+            } else {
+                return o2.number - o1.number;
+            }
+        }
+    }
 
     public static class PollLoggingFile {
         public File file;
@@ -92,7 +103,7 @@ public class Logging {
                 throw new IllegalStateException( log.getName() + " does not contain a date" );
             }
         } else {
-            throw new IllegalStateException( log.getName() + " is a log file" );
+            throw new IllegalStateException( log.getName() + " is not a log file" );
         }
     }
 
@@ -101,14 +112,18 @@ public class Logging {
         List<PollLoggingFile> list = new LinkedList<PollLoggingFile>();
 
         for( File log : logs ) {
-            list.add( getPollLogFile( log ) );
+            try {
+                list.add( getPollLogFile( log ) );
+            } catch( Exception e ) {
+                logger.warning( e.getMessage() );
+            }
         }
 
         return list;
     }
 
     public static void prune( File[] logs, int days ) {
-        if( logs.length > 1 ) {
+        if( logs.length > 1 && days > 0 ) {
             /* If there exists some logs, delete those older than seven days */
             Date seven = new Date();
             Calendar cal = Calendar.getInstance();
