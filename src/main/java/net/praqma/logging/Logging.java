@@ -1,5 +1,7 @@
 package net.praqma.logging;
 
+import org.apache.oro.text.regex.PatternMatcher;
+
 import java.io.File;
 import java.io.FilenameFilter;
 import java.text.DateFormat;
@@ -7,13 +9,46 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.logging.Logger;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class Logging {
 
     public static final String LOGFILENAME = "debug.log";
-    private static DateFormat dateFormatter = new SimpleDateFormat( "yyyyMMdd" );
+    public static final String POLLLOGPATH = "poll-logging";
+    //private static DateFormat dateFormatter = new SimpleDateFormat( "yyyyMMdd" );
+
+    private static final ThreadLocal<DateFormat> dateFormat = new ThreadLocal<DateFormat>() {
+        @Override
+        protected DateFormat initialValue() {
+            return new SimpleDateFormat("yyyyMMdd");
+        }
+    };
+
+    private static final ThreadLocal<DateFormat> dateFormatNice = new ThreadLocal<DateFormat>() {
+        @Override
+        protected DateFormat initialValue() {
+            return new SimpleDateFormat("EEEE, d MMMMM yyyy");
+        }
+    };
+
     private static Logger logger = Logger.getLogger( Logging.class.getName() );
+
+    public static class PollLoggingFile {
+        public File file;
+        public String formattedDate;
+        public Date date;
+        public float kbytes;
+        public String name;
+        public int number;
+
+        public String toString() {
+            return file.getName() + ": " + date;
+        }
+    }
 
     private Logging() {}
 
@@ -23,6 +58,53 @@ public class Logging {
                 return name.endsWith( ".log" );
             }
         } );
+    }
+
+    public static Date getDate( File log ) {
+        int l = log.getName().length();
+        String date = log.getName().substring( l - 12, l - 4 );
+        System.out.println( "DATE FOR " + log + ": " + date );
+        try {
+            return dateFormat.get().parse( date );
+        } catch( Exception e ) {
+            throw new IllegalStateException( "Unable to parse " + log.getName() + " for date." );
+        }
+    }
+
+    private static final Pattern rx_logfile = Pattern.compile( "^(.+)-(\\d+)\\.(\\d+)\\.log$" );
+
+    public static PollLoggingFile getPollLogFile( File log ) {
+        Matcher m = rx_logfile.matcher( log.getName() );
+
+        if( m.find() ) {
+            try {
+                PollLoggingFile f = new PollLoggingFile();
+
+                f.file = log;
+                f.date = dateFormat.get().parse( m.group( 3 ) );
+                f.formattedDate = dateFormatNice.get().format( f.date );
+                f.kbytes = Math.round( ( (float)log.length() / 1024f ) * 100f ) / 100f; // KB!
+                f.name = m.group( 1 );
+                f.number = Integer.parseInt( m.group( 2 ) );
+
+                return f;
+            } catch( Exception e ) {
+                throw new IllegalStateException( log.getName() + " does not contain a date" );
+            }
+        } else {
+            throw new IllegalStateException( log.getName() + " is a log file" );
+        }
+    }
+
+    public static List<PollLoggingFile> getPollLogs( File path ) {
+        File[] logs = getLogs( path );
+        List<PollLoggingFile> list = new LinkedList<PollLoggingFile>();
+
+        for( File log : logs ) {
+            list.add( getPollLogFile( log ) );
+        }
+
+        return list;
     }
 
     public static void prune( File[] logs, int days ) {
@@ -37,7 +119,7 @@ public class Logging {
                 String date = log.getName().substring( l - 12, l - 4 );
                 System.out.println( "DATE FOR " + log + ": " + date );
                 try {
-                    Date d = dateFormatter.parse( date );
+                    Date d = dateFormat.get().parse( date );
                     if( d.before( cal.getTime() ) ) {
                         if( !log.delete() ) {
                             logger.warning( "Unable to delete " + log );
@@ -52,7 +134,7 @@ public class Logging {
 
     public static File getLogFile( File logDir, String name ) {
         System.out.println( "Getting log file: " + name );
-        String d = dateFormatter.format( new Date() );
+        String d = dateFormat.get().format( new Date() );
         File logfile = new File( logDir, name + "." + d + ".log" );
 
         return logfile;

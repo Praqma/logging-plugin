@@ -10,10 +10,7 @@ public final class LoggingUtils {
 
 	/**
 	 * Setup logging handler and add to the root logger
-	 * 
-	 * @param name
-	 * @param level
-	 * @param action
+	 *
 	 */
 	public static LoggingHandler createHandler( OutputStream fos ) {
 

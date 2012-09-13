@@ -32,7 +32,7 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		LoggingHandler pollhandler = this.pollhandler.get( id );
 		
 		if( pollhandler == null && name != null ) {
-			File path = new File( owner.getRootDir(), "poll-logging" );
+			File path = new File( owner.getRootDir(), Logging.POLLLOGPATH );
 			if( !path.exists() ) {
 				path.mkdir();
 			}
@@ -59,7 +59,6 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	}
 	
 	public LoggingAction getLoggingAction( long id, String name ) throws IOException {
-        System.out.println( "STRUNG; " + name );
 		LoggingHandler handler = getPollhandler( id, name );
         if( handler != null ) {
 		    return new LoggingAction( null, handler, getTargets() );
@@ -69,14 +68,13 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	}
 
     @Override
-    public Collection<Action> getJobActions( AbstractProject<?, ?> project ) {
+    public Collection<? extends Action> getJobActions( Job<?, ?> job ) {
         List<LoggingProjectAction> list = new ArrayList<LoggingProjectAction>();
-        list.add(new LoggingProjectAction());
-        return (Collection<Action>) list;
+        list.add(new LoggingProjectAction( job ));
+        return (Collection<LoggingProjectAction>) list;
     }
 
-
-	private void setTargets( List<LoggingTarget> targets ) {
+    private void setTargets( List<LoggingTarget> targets ) {
 		this.targets = targets;
 	}
 
