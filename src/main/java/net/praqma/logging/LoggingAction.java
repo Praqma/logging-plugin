@@ -78,7 +78,7 @@ public class LoggingAction implements Action {
 
 	@Override
 	public String getIconFileName() {
-        return "/plugin/logging/images/notebook.png";
+        return "/images/48x48/notepad.png";
 	}
 
 	@Override

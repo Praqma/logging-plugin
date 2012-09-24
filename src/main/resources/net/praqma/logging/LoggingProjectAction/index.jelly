@@ -2,7 +2,7 @@
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <l:layout title="Poll logs for ${it}">
         <l:main-panel>
-            <h1>List of poll logs</h1>
+            <h1>Poll Logs</h1>
             <table>
                 <tr>
                     <td></td>
@@ -11,7 +11,7 @@
                 </tr>
             <j:forEach var="item" items="${it.getLogs()}">
                 <tr>
-                    <td><a href="getPollLog?log=${item.file.getName()}"><img src="/plugin/logging/images/notebook.png" style="width:24px" /></a></td>
+                    <td><a href="getPollLog?log=${item.file.getName()}"><img src="/images/48x48/notepad.png" style="width:24px" /></a></td>
                     <td style="font-size:18px;font-weight: bolder">${item.number}</td>
                     <td align="left">${item.formattedDate}<br />
                     ${item.kbytes}KB</td>
