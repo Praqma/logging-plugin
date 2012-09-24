@@ -2,7 +2,7 @@
          xmlns:l="/lib/layout" xmlns:t="/lib/hudson" xmlns:f="/lib/form">
     <l:layout title="Poll logs for ${it}">
         <l:main-panel>
-            <h1>List o' poll logs</h1>
+            <h1>List of poll logs</h1>
             <table>
                 <tr>
                     <td></td>
