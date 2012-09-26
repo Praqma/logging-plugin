@@ -1,5 +1,7 @@
 package net.praqma.logging;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.MessageFormat;
 import java.util.Date;
 import java.util.logging.Formatter;
@@ -12,7 +14,7 @@ public class PraqmaticFormatter extends Formatter {
 	private static final int width = 8;
 	private boolean enableLineNumbers = true;
 	
-	private MessageFormat messageFormat = new MessageFormat( "{3,date,HH:mm:ss} [{1}]{5} {6}.{7}, {99}: {4} \n" );
+	private MessageFormat messageFormat = new MessageFormat( "{3,date,HH:mm:ss} [{1}]{5} {6}.{7}, {19}: {4} \n{8}" );
 	
 	public PraqmaticFormatter() {}
 	
@@ -24,12 +26,13 @@ public class PraqmaticFormatter extends Formatter {
 	@Override
 	public String format( LogRecord record ) {
 		
-		Object[] args = new Object[100];
+		Object[] args = new Object[20];
 		args[0] = record.getLoggerName();
 		args[1] = record.getLevel();
 		args[2] = Thread.currentThread().getName();
 		args[3] = new Date( record.getMillis() );
 		args[4] = record.getMessage();
+
 		int w = width - record.getLevel().getName().length();
 		if( w > 0 ) {
 			args[5] = new String( new char[w] ).replace( "\0", " " );
@@ -39,16 +42,29 @@ public class PraqmaticFormatter extends Formatter {
 		
 		args[6] = record.getSourceClassName();
 		args[7] = record.getSourceMethodName();
+        if( record.getThrown() != null ) {
+            try {
+                StringWriter sw = new StringWriter();
+                PrintWriter pw = new PrintWriter(sw);
+                record.getThrown().printStackTrace(pw);
+                pw.close();
+                args[8] = sw.toString();
+            } catch (Exception ex) {
+                args[8] = "?";
+            }
+        } else {
+            args[8] = "";
+        }
 		
 		
 		if( enableLineNumbers ) {
 			try {
-				args[99] = Thread.currentThread().getStackTrace()[8].getLineNumber();
+				args[19] = Thread.currentThread().getStackTrace()[8].getLineNumber();
 			} catch( Exception e ) {
-				args[99] = -1;
+				args[19] = -1;
 			}
 		} else {
-			args[99] = "?";
+			args[19] = "?";
 		}
 		
 		return messageFormat.format( args );
