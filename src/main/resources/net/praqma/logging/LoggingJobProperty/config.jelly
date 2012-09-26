@@ -34,11 +34,11 @@
 	       <f:checkbox name="logging.pollLogging" checked="${instance.pollLogging}" />                                                                                        
 	    </f:entry>
 
-        <f:entry title="${%Enable poll logging}">
+        <f:entry title="${%Keep poll logs for}">
             <j:set var="days" value="${descriptor.getDays()}"/>
             <select class="setting-input" name="pruneDays">
                 <j:forEach var="d" items="${days}">
-                    <f:option selected="${instance.pruneDays==d}" value="${d}">${d}</f:option>
+                    <f:option selected="${instance.pruneDays==d}" value="${d}">${d} days</f:option>
                 </j:forEach>
             </select>
         </f:entry>
