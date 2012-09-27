@@ -136,7 +136,6 @@ public class Logging {
     }
 
     public static File getLogFile( File logDir, String name ) {
-        System.out.println( "Getting log file: " + name );
         String d = dateFormat.get().format( new Date() );
         File logfile = new File( logDir, name + "." + d + ".log" );
 
