@@ -98,11 +98,13 @@ public class Logging {
         File[] logs = getLogs( path );
         List<PollLoggingFile> list = new LinkedList<PollLoggingFile>();
 
-        for( File log : logs ) {
-            try {
-                list.add( getPollLogFile( log ) );
-            } catch( Exception e ) {
-                logger.warning( e.getMessage() );
+        if( logs != null ) {
+            for( File log : logs ) {
+                try {
+                    list.add( getPollLogFile( log ) );
+                } catch( Exception e ) {
+                    logger.warning( e.getMessage() );
+                }
             }
         }
 

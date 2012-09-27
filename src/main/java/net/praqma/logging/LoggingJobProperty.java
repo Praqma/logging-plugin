@@ -36,7 +36,9 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 		if( pollhandler == null && name != null ) {
 			File path = new File( owner.getRootDir(), Logging.POLLLOGPATH );
 			if( !path.exists() ) {
-				path.mkdir();
+				if( !path.mkdirs() ) {
+                    System.out.println( "Could not mkdirs: " + path );
+                }
 			}
 
             /* Pruning */
