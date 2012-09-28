@@ -22,7 +22,7 @@ public class LoggingAction implements Action {
 	protected transient LoggingStream loggingStream;
 	protected transient List<LoggingTarget> targets;
 	protected transient LoggingHandler handler;
-    protected transient Run run;
+    protected Run run;
 
     public LoggingAction( Run run, FileOutputStream out, List<LoggingTarget> targets ) {
 		loggingStream = new LoggingStream( out );
