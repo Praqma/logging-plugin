@@ -11,8 +11,8 @@
                 </tr>
             <j:forEach var="item" items="${it.getLogs()}">
                 <tr>
-                    <td><a href="getPollLog?log=${item.file.getName()}"><img src="/images/48x48/notepad.png" style="width:24px" /></a></td>
-                    <td style="font-size:18px;font-weight: bolder">${item.number}</td>
+                    <td><a href="getPollLog?log=${item.file.getName()}"><img src="${rootURL}/images/48x48/notepad.png" style="width:24px" /></a></td>
+                    <td style="font-size:18px;font-weight: bolder"><a href="getPollLog?log=${item.file.getName()}">${item.number}</a></td>
                     <td align="left">${item.formattedDate}<br />
                     ${item.kbytes}KB</td>
                 </tr>
