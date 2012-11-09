@@ -22,12 +22,14 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	private boolean pollLogging = false;
     private int pruneDays = 0;
 	
-	private transient Map<Long, LoggingHandler> pollhandler = new HashMap<Long, LoggingHandler>();
+	private transient Map<Long, LoggingHandler> pollhandler;
 
 	@DataBoundConstructor
 	public LoggingJobProperty( boolean pollLogging, int pruneDays ) {
 		this.pollLogging = pollLogging;
         this.pruneDays = pruneDays;
+
+        pollhandler = new HashMap<Long, LoggingHandler>();
 	}
 	
 	public LoggingHandler getPollhandler( long id, String name ) throws IOException {
