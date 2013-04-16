@@ -22,7 +22,11 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	private boolean pollLogging = false;
     private int pruneDays = 0;
 	
-	private transient Map<Long, LoggingHandler> pollhandler;
+	private transient Map<Long, LoggingHandler> pollhandler = new HashMap<Long, LoggingHandler>();
+
+    public LoggingJobProperty() {
+        pollhandler = new HashMap<Long, LoggingHandler>();
+    }
 
 	@DataBoundConstructor
 	public LoggingJobProperty( boolean pollLogging, int pruneDays ) {
@@ -33,7 +37,13 @@ public class LoggingJobProperty extends JobProperty<Job<?, ?>> {
 	}
 	
 	public LoggingHandler getPollhandler( long id, String name ) throws IOException {
-		LoggingHandler pollhandler = this.pollhandler.get( id );
+        LoggingHandler pollhandler = null;
+        try {
+		    pollhandler = this.pollhandler.get( id );
+        } catch ( NullPointerException e ) {
+            this.pollhandler = new HashMap<Long, LoggingHandler>();
+            pollhandler = this.pollhandler.get( id );
+        }
 		
 		if( pollhandler == null && name != null ) {
 			File path = new File( owner.getRootDir(), Logging.POLLLOGPATH );
