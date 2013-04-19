@@ -1,0 +1,3 @@
+<div>
+    Advanced logging for Jenkins. Enabling per build and poll logging for jobs. Logging done on slaves will be included as well.
+</div>
