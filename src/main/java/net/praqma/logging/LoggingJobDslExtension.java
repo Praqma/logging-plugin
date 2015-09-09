@@ -9,31 +9,31 @@ import javaposse.jobdsl.plugin.DslExtensionMethod;
 /*
 ```
 job{
-  properties{	
-    logging{
-      pollLogging (boolean enablePollLogging)
-      pruneDays (int daysToKeepPollLogs)
-      target{
-        name (String targetName)
-        level (String loggingLevel)
-      }
+    properties{	
+        logging{
+            pollLogging (boolean enablePollLogging)
+            pruneDays (int daysToKeepPollLogs)
+            target{
+                name (String targetName)
+                level (String loggingLevel)
+            }
+        }
     }
-  }
 }
 ```
 Valid values for `level` are `SEVERE`, `WARNING`, `INFO`, `CONFIG`, `FINE`, `FINER`and `FINEST`.
 ```
 job{
-  properties{	
-    logging{
-      pollLogging true
-      pruneDays 20
-      target{
-        name "hey"
-        level "FINE"
-      }
+    properties{	
+        logging{
+            pollLogging true
+            pruneDays 20
+            target{
+                name 'org.techworld.sonar'
+                level 'FINE'
+            }
+        }
     }
-  }
 }
 ```
 */
