@@ -3,7 +3,7 @@
 	<parent>
 		<groupId>org.jenkins-ci.plugins</groupId>
 		<artifactId>plugin</artifactId>
-		<version>1.483</version>
+		<version>1.532.3</version>
 	</parent>
 
 	<groupId>net.praqma</groupId>
@@ -29,7 +29,6 @@
 				</configuration>
 			</plugin>
 		</plugins>
-
 	</build>
 
 	<repositories>
@@ -69,5 +68,12 @@
 		<developerConnection>scm:git:ssh://git@github.com/Praqma/logging-plugin.git</developerConnection>
 		<url>https://github.com/Praqma/logging-plugin.git</url>
 	</scm>
-	
+    <dependencies>
+        <dependency>
+            <groupId>org.jenkins-ci.plugins</groupId>
+            <artifactId>job-dsl</artifactId>
+            <version>1.37</version>
+            <optional>true</optional>
+        </dependency>
+    </dependencies>
 </project>
