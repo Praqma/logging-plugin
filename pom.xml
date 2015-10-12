@@ -8,7 +8,7 @@
 
     <groupId>net.praqma</groupId>
     <artifactId>logging</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1-SNAPSHOT</version>
     <name>Logging Plugin</name>
     <description>Advanced logging for Jenkins</description>
     <url>https://wiki.jenkins-ci.org/display/JENKINS/Logging+Plugin</url>
@@ -61,7 +61,7 @@
         <connection>scm:git:ssh://github.com/Praqma/logging-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/Praqma/logging-plugin.git</developerConnection>
         <url>https://github.com/Praqma/logging-plugin.git</url>
-      <tag>logging-1.0.0</tag>
+      <tag>HEAD</tag>
   </scm>
     
     <dependencies>
